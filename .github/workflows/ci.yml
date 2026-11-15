@@ -1,0 +1,28 @@
+# Every push / PR: types, unit tests, production build.
+# If the prompt, taxonomy or tagger changed: re-run the held-out eval and fail below the accuracy gate.
+name: ci
+on:
+  push: { branches: [main], paths-ignore: ["data/posts.jsonl", "data/runs.jsonl"] }
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Did the tagger change?
+        id: diff
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -qE '^(pipeline/tagger/|lib/taxonomy.ts|data/golden\.)'; then echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Eval gate (held-out set)
+        if: steps.diff.outputs.changed == 'true' && github.event_name == 'push'
+        env: { GEMINI_API_KEY: "${{ secrets.GEMINI_API_KEY }}" }
+        run: npm run eval -- holdout

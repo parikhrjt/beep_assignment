@@ -1,0 +1,2738 @@
+{
+ "set": "dev",
+ "at": "2026-11-15T22:43:28.107Z",
+ "model": "gemini-3.5-flash-lite",
+ "prompt_v": "20f64852",
+ "n": 50,
+ "labeled_by": "claude-fable-5.2 (blind manual read)",
+ "human_verified": 0,
+ "verified_by": null,
+ "llm": {
+  "role_strict": {
+   "k": 44,
+   "n": 50,
+   "acc": 0.88,
+   "ci95": [
+    0.762,
+    0.944
+   ]
+  },
+  "role_lenient": {
+   "k": 49,
+   "n": 50,
+   "acc": 0.98,
+   "ci95": [
+    0.895,
+    0.996
+   ]
+  },
+  "city": {
+   "k": 48,
+   "n": 50,
+   "acc": 0.96,
+   "ci95": [
+    0.865,
+    0.989
+   ]
+  },
+  "role_and_city": {
+   "k": 47,
+   "n": 50,
+   "acc": 0.94,
+   "ci95": [
+    0.838,
+    0.979
+   ]
+  },
+  "verdict": {
+   "k": 33,
+   "n": 33,
+   "acc": 1,
+   "ci95": [
+    0.896,
+    1
+   ]
+  }
+ },
+ "rules_baseline": {
+  "role_strict": {
+   "k": 26,
+   "n": 50,
+   "acc": 0.52,
+   "ci95": [
+    0.385,
+    0.652
+   ]
+  },
+  "role_lenient": {
+   "k": 28,
+   "n": 50,
+   "acc": 0.56,
+   "ci95": [
+    0.423,
+    0.688
+   ]
+  },
+  "city": {
+   "k": 49,
+   "n": 50,
+   "acc": 0.98,
+   "ci95": [
+    0.895,
+    0.996
+   ]
+  },
+  "role_and_city": {
+   "k": 28,
+   "n": 50,
+   "acc": 0.56,
+   "ci95": [
+    0.423,
+    0.688
+   ]
+  },
+  "verdict": {
+   "k": 28,
+   "n": 33,
+   "acc": 0.848,
+   "ci95": [
+    0.691,
+    0.933
+   ]
+  }
+ },
+ "by_source": {
+  "first_party_ats": {
+   "role_strict": {
+    "k": 25,
+    "n": 25,
+    "acc": 1,
+    "ci95": [
+     0.867,
+     1
+    ]
+   },
+   "role_lenient": {
+    "k": 25,
+    "n": 25,
+    "acc": 1,
+    "ci95": [
+     0.867,
+     1
+    ]
+   },
+   "city": {
+    "k": 24,
+    "n": 25,
+    "acc": 0.96,
+    "ci95": [
+     0.805,
+     0.993
+    ]
+   },
+   "role_and_city": {
+    "k": 24,
+    "n": 25,
+    "acc": 0.96,
+    "ci95": [
+     0.805,
+     0.993
+    ]
+   },
+   "verdict": {
+    "k": 18,
+    "n": 18,
+    "acc": 1,
+    "ci95": [
+     0.824,
+     1
+    ]
+   }
+  },
+  "aggregator": {
+   "role_strict": {
+    "k": 19,
+    "n": 25,
+    "acc": 0.76,
+    "ci95": [
+     0.566,
+     0.885
+    ]
+   },
+   "role_lenient": {
+    "k": 24,
+    "n": 25,
+    "acc": 0.96,
+    "ci95": [
+     0.805,
+     0.993
+    ]
+   },
+   "city": {
+    "k": 24,
+    "n": 25,
+    "acc": 0.96,
+    "ci95": [
+     0.805,
+     0.993
+    ]
+   },
+   "role_and_city": {
+    "k": 23,
+    "n": 25,
+    "acc": 0.92,
+    "ci95": [
+     0.75,
+     0.978
+    ]
+   },
+   "verdict": {
+    "k": 15,
+    "n": 15,
+    "acc": 1,
+    "ci95": [
+     0.796,
+     1
+    ]
+   }
+  }
+ },
+ "by_trust": {
+  "verified": {
+   "role_strict": {
+    "k": 44,
+    "n": 50,
+    "acc": 0.88,
+    "ci95": [
+     0.762,
+     0.944
+    ]
+   },
+   "role_lenient": {
+    "k": 49,
+    "n": 50,
+    "acc": 0.98,
+    "ci95": [
+     0.895,
+     0.996
+    ]
+   },
+   "city": {
+    "k": 48,
+    "n": 50,
+    "acc": 0.96,
+    "ci95": [
+     0.865,
+     0.989
+    ]
+   },
+   "role_and_city": {
+    "k": 47,
+    "n": 50,
+    "acc": 0.94,
+    "ci95": [
+     0.838,
+     0.979
+    ]
+   },
+   "verdict": {
+    "k": 33,
+    "n": 33,
+    "acc": 1,
+    "ci95": [
+     0.896,
+     1
+    ]
+   }
+  },
+  "review": {
+   "role_strict": {
+    "k": 0,
+    "n": 0,
+    "acc": null,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "role_lenient": {
+    "k": 0,
+    "n": 0,
+    "acc": null,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "city": {
+    "k": 0,
+    "n": 0,
+    "acc": null,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "role_and_city": {
+    "k": 0,
+    "n": 0,
+    "acc": null,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "verdict": {
+    "k": 0,
+    "n": 0,
+    "acc": null,
+    "ci95": [
+     0,
+     0
+    ]
+   }
+  }
+ },
+ "receipts": {
+  "quotes_checked": 150,
+  "verbatim": 150
+ },
+ "cost": {
+  "in_tokens": 23283,
+  "out_tokens": 8092,
+  "calls": 7,
+  "usd": 0.027215,
+  "per_1k_posts_usd": 0.5443,
+  "price": {
+   "in_per_m": 0.3,
+   "out_per_m": 2.5,
+   "as_of": "2026-11-16",
+   "source": "https://aistudio.google.com/docs/pricing"
+  }
+ },
+ "gate": {
+  "role_lenient": 0.8,
+  "city": 0.85
+ },
+ "items": [
+  {
+   "id": "9e0b4f10d7e3",
+   "source": "lever",
+   "title": "Associate IT Audit",
+   "company": "Paytm",
+   "location_raw": "Noida, Uttar Pradesh (onsite)",
+   "gold": {
+    "role": "security",
+    "role_alt": "finance",
+    "cities": [
+     "Noida"
+    ],
+    "verdict": "early"
+   },
+   "pred": {
+    "role": "security",
+    "cities": [
+     "Noida"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "finance",
+    "cities": [
+     "Noida"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Information Security and Cloud Security Auditor",
+     "ok": true
+    },
+    "city": {
+     "quote": "Noida, Uttar Pradesh",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Minimum 2 years of experience in information security",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "5a975a239b7a",
+   "source": "greenhouse",
+   "title": "Staff Engineer I",
+   "company": "InMobi",
+   "location_raw": "Bangalore; Bangalore, Karnataka, India; Lucknow",
+   "gold": {
+    "role": "data_ai",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru",
+     "Lucknow"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "data_ai",
+    "cities": [
+     "Bengaluru",
+     "Lucknow"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "software",
+    "cities": [
+     "Bengaluru",
+     "Lucknow"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Staff Engineer I",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bangalore; Bangalore, Karnataka, India; Lucknow",
+     "ok": true
+    },
+    "exp": {
+     "quote": "8+ years of industry experience in ML/Data Science",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "27438a7da2e7",
+   "source": "greenhouse",
+   "title": "Associate Director - Account Management",
+   "company": "Sigmoid",
+   "location_raw": "Bengaluru, Karnataka, India",
+   "gold": {
+    "role": "sales",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "sales",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Associate Director - Account Management",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bengaluru, Karnataka, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Minimum 10+ to 20 years of relevant experience",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "287a88613408",
+   "source": "greenhouse",
+   "title": "Associate Manager, Growth Marketing",
+   "company": "Razorpay Software Private Limited",
+   "location_raw": "Bengaluru; EngageHQ",
+   "gold": {
+    "role": "marketing",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "marketing",
+    "cities": [
+     "Bengaluru",
+     "Other"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "marketing",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Associate Manager, Growth Marketing",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bengaluru; EngageHQ",
+     "ok": true
+    },
+    "exp": {
+     "quote": "3–6 years of experience in campaign management",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": false,
+    "verdict": true
+   }
+  },
+  {
+   "id": "b108dd2cc7ef",
+   "source": "lever",
+   "title": "CST - Associate - Bill Payments CST",
+   "company": "Paytm",
+   "location_raw": "Noida, Uttar Pradesh (onsite)",
+   "gold": {
+    "role": "support",
+    "role_alt": null,
+    "cities": [
+     "Noida"
+    ],
+    "verdict": "early"
+   },
+   "pred": {
+    "role": "support",
+    "cities": [
+     "Noida"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Noida"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "CST - Associate - Bill Payments CST",
+     "ok": true
+    },
+    "city": {
+     "quote": "Noida, Uttar Pradesh",
+     "ok": true
+    },
+    "exp": {
+     "quote": "1+ years’ experience in customer support",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "57eaf772bb17",
+   "source": "greenhouse",
+   "title": "Support Associate (Pune)",
+   "company": "Agoda",
+   "location_raw": "Pune; Pune, Maharashtra, India; Gurgaon; Gurgaon, Bihar, India",
+   "gold": {
+    "role": "support",
+    "role_alt": null,
+    "cities": [
+     "Pune",
+     "Gurugram"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "support",
+    "cities": [
+     "Pune",
+     "Gurugram"
+    ],
+    "verdict": "unclear"
+   },
+   "rules": {
+    "role": "support",
+    "cities": [
+     "Gurugram",
+     "Pune"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Support Associate (Pune)",
+     "ok": true
+    },
+    "city": {
+     "quote": "Pune; Pune, Maharashtra, India; Gurgaon; Gurgaon, Bihar, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "e689326ce025",
+   "source": "greenhouse",
+   "title": "Fraud Operations Associate SDC",
+   "company": "Stripe",
+   "location_raw": "Bengaluru; India Locations",
+   "gold": {
+    "role": "operations",
+    "role_alt": "finance",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "operations",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "unclear"
+   },
+   "rules": {
+    "role": "operations",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Fraud Operations Associate SDC",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bengaluru; India Locations",
+     "ok": true
+    },
+    "exp": {
+     "quote": "",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "f2c1c1bd6627",
+   "source": "greenhouse",
+   "title": "Intern, Automation Engineer",
+   "company": "Workato",
+   "location_raw": "Hyderabad, India; Hyderabad, Telangana, India",
+   "gold": {
+    "role": "devops",
+    "role_alt": "software",
+    "cities": [
+     "Hyderabad"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "devops",
+    "cities": [
+     "Hyderabad"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "qa",
+    "cities": [
+     "Hyderabad"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Intern, Automation Engineer",
+     "ok": true
+    },
+    "city": {
+     "quote": "Hyderabad, India; Hyderabad, Telangana, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Intern, Automation Engineer",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "ec5755ee39a1",
+   "source": "greenhouse",
+   "title": "Associate (AI) Solution Consultant",
+   "company": "Celonis",
+   "location_raw": "Bangalore, India",
+   "gold": {
+    "role": "consulting",
+    "role_alt": "sales",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "consulting",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "data_ai",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "As an Associate Value Engineer you are pushing the envelope in solving business-critical problems for our customers.",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bangalore, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Kickstart your career in enterprise software through our immersive 12-month Orbit Program.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "daa5dae47d4e",
+   "source": "lever",
+   "title": "Associate Director - Business Finance",
+   "company": "Meesho",
+   "location_raw": "Bangalore, Karnataka (onsite)",
+   "gold": {
+    "role": "finance",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "finance",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "finance",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Associate Director - Business Finance",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bangalore, Karnataka (onsite)",
+     "ok": true
+    },
+    "exp": {
+     "quote": "6 to 10 years Exp, Chartered Accountant or Post-Graduate in Finance",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "eb65d3c71c1a",
+   "source": "greenhouse",
+   "title": "Associate Accounts Payable & Expense Specialist",
+   "company": "LaunchDarkly",
+   "location_raw": "Hybrid - Bangalore; India",
+   "gold": {
+    "role": "finance",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "finance",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "finance",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Associate Accounts Payable & Expense Specialist",
+     "ok": true
+    },
+    "city": {
+     "quote": "Hybrid - Bangalore; India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "3+ years of experience in accounts payable, employee expense administration",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "85b2fb356215",
+   "source": "lever",
+   "title": "Senior Associate Legal",
+   "company": "Zeta",
+   "location_raw": "Mumbai / Bangalore (onsite)",
+   "gold": {
+    "role": "legal",
+    "role_alt": null,
+    "cities": [
+     "Mumbai",
+     "Bengaluru"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "legal",
+    "cities": [
+     "Mumbai",
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "legal",
+    "cities": [
+     "Bengaluru",
+     "Mumbai"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Senior Associate Legal",
+     "ok": true
+    },
+    "city": {
+     "quote": "Mumbai / Bangalore (onsite)",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Post Qualification Experience: 4 years In a top tier law firm",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "063fbdc08657",
+   "source": "lever",
+   "title": "CST - Associate - Social CST",
+   "company": "Paytm",
+   "location_raw": "Noida, Uttar Pradesh (onsite)",
+   "gold": {
+    "role": "support",
+    "role_alt": null,
+    "cities": [
+     "Noida"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "support",
+    "cities": [
+     "Noida"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Noida"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Social CST Team comprises service associates who help customers through their journey on Paytm",
+     "ok": true
+    },
+    "city": {
+     "quote": "Noida, Uttar Pradesh (onsite)",
+     "ok": true
+    },
+    "exp": {
+     "quote": "1+ years’ experience in social media escalations management",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "d2ada842a194",
+   "source": "greenhouse",
+   "title": "Customer Support Associate I",
+   "company": "Zscaler",
+   "location_raw": "Bangalore, IND; Mohali, IND",
+   "gold": {
+    "role": "support",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru",
+     "Chandigarh"
+    ],
+    "verdict": "early"
+   },
+   "pred": {
+    "role": "support",
+    "cities": [
+     "Bengaluru",
+     "Chandigarh"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "support",
+    "cities": [
+     "Bengaluru",
+     "Chandigarh"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Customer Support Associate I",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bangalore, IND; Mohali, IND",
+     "ok": true
+    },
+    "exp": {
+     "quote": "At least 2 years of dedicated experience in a customer service or support environment",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "91bba191bf10",
+   "source": "greenhouse",
+   "title": "Senior Associate, Digital Assets",
+   "company": "Tower Research Capital",
+   "location_raw": "Gurgaon; Gurgaon, Haryana, India",
+   "gold": {
+    "role": "finance",
+    "role_alt": "operations",
+    "cities": [
+     "Gurugram"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "finance",
+    "cities": [
+     "Gurugram"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Gurugram"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Senior Associate, Digital Assets",
+     "ok": true
+    },
+    "city": {
+     "quote": "Gurgaon; Gurgaon, Haryana, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "At least 3–5 years of experience in capital markets or cryptocurrency operations.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "5c89795120af",
+   "source": "greenhouse",
+   "title": "Associate Manager, AEO",
+   "company": "Razorpay Software Private Limited",
+   "location_raw": "Bengaluru; Payments",
+   "gold": {
+    "role": "marketing",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "marketing",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Associate Manager, AEO",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bengaluru; Payments",
+     "ok": true
+    },
+    "exp": {
+     "quote": "3+ years of experience in SEO, with at least 1-2 years of direct exposure to AEO",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "22bb4396234e",
+   "source": "greenhouse",
+   "title": "Associate Recruiter",
+   "company": "MongoDB",
+   "location_raw": "Gurugram; Gurugram, Haryana, India",
+   "gold": {
+    "role": "hr",
+    "role_alt": null,
+    "cities": [
+     "Gurugram"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "hr",
+    "cities": [
+     "Gurugram"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Gurugram"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Associate Recruiter",
+     "ok": true
+    },
+    "city": {
+     "quote": "Gurugram",
+     "ok": true
+    },
+    "exp": {
+     "quote": "expertise in passive candidate sourcing for either technical or sales-focused roles is preferred but not required.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "5c68bc40f015",
+   "source": "lever",
+   "title": "Intern- HR Onboarding",
+   "company": "Paytm",
+   "location_raw": "Noida, Uttar Pradesh (onsite)",
+   "gold": {
+    "role": "hr",
+    "role_alt": null,
+    "cities": [
+     "Noida"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "hr",
+    "cities": [
+     "Noida"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "hr",
+    "cities": [
+     "Noida"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "HR Onboarding Intern",
+     "ok": true
+    },
+    "city": {
+     "quote": "Noida",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Positions (MBA / Graduate)",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "7315348adf30",
+   "source": "greenhouse",
+   "title": "Payroll Industrial Trainee",
+   "company": "Rubrik Job Board",
+   "location_raw": "Bangalore; Bangalore East, Bengaluru, Karnataka, India",
+   "gold": {
+    "role": "finance",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "finance",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "finance",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Payroll Industrial Trainee",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bangalore",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Education:CA Intern and eligible for industrial training.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "f38756efe2b9",
+   "source": "smartrecruiters",
+   "title": "HR Operations Intern",
+   "company": "Lokal",
+   "location_raw": "Bangalore, India",
+   "gold": {
+    "role": "hr",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "hr",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "hr",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "HR Operations Intern",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bangalore",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Pursuing/completed a degree in HR, Business Administration, Mass Communications, English Literature, or related fields.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "03228baddb43",
+   "source": "greenhouse",
+   "title": "Senior Associate - Corporate Secretary & Compliance",
+   "company": "InMobi",
+   "location_raw": "Bangalore; Bangalore, Karnataka, India",
+   "gold": {
+    "role": "legal",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "legal",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "legal",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Senior Associate - Corporate Secretary & Compliance",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bangalore",
+     "ok": true
+    },
+    "exp": {
+     "quote": "3-4 years PQE relevant experience.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "796894cc5861",
+   "source": "greenhouse",
+   "title": "Associate Director - Delivery",
+   "company": "Sigmoid",
+   "location_raw": "Bengaluru, Karnataka, India",
+   "gold": {
+    "role": "product",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "product",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Associate Director - Delivery",
+     "ok": true
+    },
+    "city": {
+     "quote": "Bengaluru",
+     "ok": true
+    },
+    "exp": {
+     "quote": "15-18 years of experience in Project Delivery",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "07a67d8d2000",
+   "source": "smartrecruiters",
+   "title": "Social Media Intern",
+   "company": "SWIGGY",
+   "location_raw": "Mumbai, MH, India",
+   "gold": {
+    "role": "marketing",
+    "role_alt": null,
+    "cities": [
+     "Mumbai"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "marketing",
+    "cities": [
+     "Mumbai"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "marketing",
+    "cities": [
+     "Mumbai"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Social Media Intern",
+     "ok": true
+    },
+    "city": {
+     "quote": "Mumbai",
+     "ok": true
+    },
+    "exp": {
+     "quote": "3-6 months of experience in social media management or a related role; relevant internship experience is welcome.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "0edd84a7dfd1",
+   "source": "lever",
+   "title": "Associate Director - Legal",
+   "company": "Zeta",
+   "location_raw": "Mumbai / Bangalore (onsite)",
+   "gold": {
+    "role": "legal",
+    "role_alt": null,
+    "cities": [
+     "Mumbai",
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "pred": {
+    "role": "legal",
+    "cities": [
+     "Mumbai",
+     "Bengaluru"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "legal",
+    "cities": [
+     "Bengaluru",
+     "Mumbai"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Associate Director - Legal",
+     "ok": true
+    },
+    "city": {
+     "quote": "Mumbai / Bangalore",
+     "ok": true
+    },
+    "exp": {
+     "quote": "9-12 years of post-qualification experience in the technology law practice",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "8c40261e5cce",
+   "source": "greenhouse",
+   "title": "AI Researcher Intern",
+   "company": "HackerRank Careers",
+   "location_raw": "Onsite in Bangalore; Hybrid in Bengaluru, India ",
+   "gold": {
+    "role": "data_ai",
+    "role_alt": null,
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "data_ai",
+    "cities": [
+     "Bengaluru"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "data_ai",
+    "cities": [
+     "Bengaluru"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "AI Researcher Intern",
+     "ok": true
+    },
+    "city": {
+     "quote": "Onsite in Bangalore; Hybrid in Bengaluru, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "2-3 years of experience in Deep Learning, Machine Learning, or Applied AI Research.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "21e60b54bac5",
+   "source": "himalayas",
+   "title": "Research Analyst - Data Annotation",
+   "company": "mercor",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "operations",
+    "role_alt": "consulting",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "consulting",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Research Analyst - Data Annotation",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Experience in annotation, ground truth, search relevance, cataloguing, or fact checking.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "6ef217c12a35",
+   "source": "himalayas",
+   "title": "International Education Loan Pioneer Internship",
+   "company": "ForeignAdmits",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "sales",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "sales",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "International Education Loan Pioneer Internship",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Currently pursuing a degree or a recent graduate from a recognized university.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "87fd6b313397",
+   "source": "himalayas",
+   "title": "Android Intern",
+   "company": "Cloud Counselage Pvt Ltd",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "software",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "software",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "software",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Android Intern",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Currently pursuing a Diploma, Bachelor's or Master's degree",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "e35ab0e1bdb1",
+   "source": "himalayas",
+   "title": "Campus Ambassador",
+   "company": "Cityscope",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "marketing",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "marketing",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Campus Ambassador",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Type: Part-time, Remote",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "67027cf8ebb9",
+   "source": "himalayas",
+   "title": "Operation Intern | India | Remote",
+   "company": "SummitNext Technologies Sdn Bhd",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "operations",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Operation Intern | India | Remote",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Currently pursuing college OR recently graduated",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "85d0bb4c6195",
+   "source": "himalayas",
+   "title": "Hotel Development Intern India",
+   "company": "Kerten Hospitality",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "sales",
+    "role_alt": "consulting",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "consulting",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Hotel Development Intern India",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Background and current education may be from a range of sectors",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "7a0fbbcabcf8",
+   "source": "himalayas",
+   "title": "Analyst, Valuation Placement",
+   "company": "Altisource",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "operations",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "finance",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "consulting",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Analyst, Valuation Placement",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "• Bachelor’s Degree or equivalent Required Skills",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": false,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "6ec43a723d96",
+   "source": "himalayas",
+   "title": "UX/UI Designer (Fresher)",
+   "company": "Proof of Skill",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "design",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "design",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "design",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "UX/UI Designer (Fresher)",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Fresher",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "b2e24907b0f5",
+   "source": "himalayas",
+   "title": "Refer a Candidate to OpenFX",
+   "company": "Openfx",
+   "location_raw": "Remote (India, United Arab Emirates, United Kingdom, United States)",
+   "gold": {
+    "role": "other",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "unclear"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "always hiring across Engineering, Product, GTM, and Operations at OpenFX",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote (India, United Arab Emirates, United Kingdom, United States)",
+     "ok": true
+    },
+    "exp": {
+     "quote": "",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "7fc7e09a4ccf",
+   "source": "himalayas",
+   "title": "Call Centre Agent-Khasi & Garo",
+   "company": "Rocket Learning",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "support",
+    "role_alt": null,
+    "cities": [
+     "Remote",
+     "Other"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "support",
+    "cities": [
+     "Other",
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Call Centre Agent-Khasi & Garo",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "entry-level position",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "939d1e0c0672",
+   "source": "himalayas",
+   "title": "AI Chatbot Developer Intern",
+   "company": "Quantum Strides LLC",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "data_ai",
+    "role_alt": "software",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "software",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "data_ai",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "AI Chatbot Developer Intern",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Internship (Contract)",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "944f7d577375",
+   "source": "himalayas",
+   "title": "AI Conversation Recording Contributor - Eastern Punjabi/Punjabi (India)",
+   "company": "RWS Group",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "other",
+    "role_alt": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "data_ai",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "AI Conversation Recording Contributors",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Experience with speech recording or data annotation projects is an advantage, but not required.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "77300a316baa",
+   "source": "himalayas",
+   "title": "DFM Engineer Intern (Mechanical Engineering) – Remote",
+   "company": "Vulcury",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "hardware",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "hardware",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "hardware",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "DFM Engineer Intern (Mechanical Engineering)",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Internship Duration: 12 weeks",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "6bca1e80e5e5",
+   "source": "himalayas",
+   "title": "Shape the Future of AI — English Talent Hub",
+   "company": "Welo Global",
+   "location_raw": "Remote (Australia, Canada, India, Ireland, Malaysia, New Zealand); Remote, India; Remote (Bangladesh, India); Remote (India, Kenya); Remote (India, Nepal); Remote (India, United States)",
+   "gold": {
+    "role": "operations",
+    "role_alt": "other",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "unclear"
+   },
+   "rules": {
+    "role": "data_ai",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Shape the Future of AI — English Talent Hub",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "This is not an active job opening. By applying, you'll join our global contributor network.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "c1402aa25762",
+   "source": "himalayas",
+   "title": "NET Developer",
+   "company": "PradeepIT Consulting Services Pvt Ltd",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "software",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "early"
+   },
+   "pred": {
+    "role": "software",
+    "cities": [
+     "Bengaluru",
+     "Remote"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "software",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "NET Developer",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "1+ years of development experience",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": false,
+    "verdict": true
+   }
+  },
+  {
+   "id": "3c7908fe9971",
+   "source": "himalayas",
+   "title": "IM & PA Medical Student SME - AI Model Evaluation (USA)",
+   "company": "Volga Partners",
+   "location_raw": "Remote (Australia, Canada, India, New Zealand, Philippines, United Kingdom)",
+   "gold": {
+    "role": "other",
+    "role_alt": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "data_ai",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "IM & PA Medical Student SME - AI Model Evaluation",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote (Australia, Canada, India, New Zealand, Philippines, United Kingdom)",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Previous AI experience is not required.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "b29b32dda64d",
+   "source": "himalayas",
+   "title": "Social Media Assistant (India)",
+   "company": "Wing Assistant",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "marketing",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "early"
+   },
+   "pred": {
+    "role": "marketing",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "marketing",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Social Media Assistant (India)",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Entry Level (1-3 years of experience): Up to INR 40,000",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "0cde5cd6d3f1",
+   "source": "himalayas",
+   "title": "Product Management Trainee",
+   "company": "AccuKnox",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "product",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "product",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "product",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Product Management Trainee",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Trainee",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "391b8f1cef2f",
+   "source": "himalayas",
+   "title": "2026 - 1609 - ERP",
+   "company": "Highstreet",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "consulting",
+    "role_alt": "software",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "consulting",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "2026 - 1609 - ERP",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "2026",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "1695a9ad736c",
+   "source": "himalayas",
+   "title": "TopSpeed | Motorcycle Journalist",
+   "company": "Valnet Tech Sites",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "marketing",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "early"
+   },
+   "pred": {
+    "role": "marketing",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "TopSpeed | Motorcycle Journalist",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "2 years of experience in producing automotive related content.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "e761f398533a",
+   "source": "himalayas",
+   "title": "Analyst-Capability Development",
+   "company": "PradeepIT Consulting Services Pvt Ltd",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "consulting",
+    "role_alt": "data_analytics",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "consulting",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "experienced"
+   },
+   "rules": {
+    "role": "consulting",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Analyst-Capability Development",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "6+ Years of Experience",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "ae79a36be550",
+   "source": "himalayas",
+   "title": "Customer Advocate Trainee",
+   "company": "AccuKnox",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "sales",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "sales",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "early"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Customer Advocate Trainee",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Disciplined Enterprise / B2B sales experience (2-5 years)",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "71ce7f207a2d",
+   "source": "himalayas",
+   "title": "Translation Validator | Gujarati",
+   "company": "Welo Global",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "other",
+    "role_alt": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": null
+   },
+   "pred": {
+    "role": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "other",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Translation Validator | Gujarati",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Project-based opportunities that fit your availability.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": null
+   }
+  },
+  {
+   "id": "334bcbde89be",
+   "source": "himalayas",
+   "title": "Part-Time Data Entry Specialist",
+   "company": "APADCode",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "operations",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "operations",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "operations",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Part-Time Data Entry Specialist",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote, India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "No technical background or previous professional experience is required.",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  },
+  {
+   "id": "45d37e2970ac",
+   "source": "himalayas",
+   "title": "Customer Support Representative (CSR I)  Apprentice",
+   "company": "HighLevel",
+   "location_raw": "Remote, India",
+   "gold": {
+    "role": "support",
+    "role_alt": null,
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "pred": {
+    "role": "support",
+    "cities": [
+     "Remote"
+    ],
+    "verdict": "fresher"
+   },
+   "rules": {
+    "role": "support",
+    "cities": [
+     "Remote"
+    ]
+   },
+   "receipts": {
+    "role": {
+     "quote": "Customer Support Representative (CSR I)  Apprentice",
+     "ok": true
+    },
+    "city": {
+     "quote": "Remote – India",
+     "ok": true
+    },
+    "exp": {
+     "quote": "Apprentice",
+     "ok": true
+    }
+   },
+   "trust": "verified",
+   "ok": {
+    "role": true,
+    "city": true,
+    "verdict": true
+   }
+  }
+ ]
+}

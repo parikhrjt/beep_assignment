@@ -1,0 +1,45 @@
+# Daily data refresh. The ONLY writer in the system.
+# collect -> dedupe -> tag (cache-first) -> verify -> quality gate -> commit data -> Vercel redeploys from git.
+name: refresh
+on:
+  schedule:
+    - cron: "30 2 * * *" # 02:30 UTC = 08:00 IST, every day
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Publish even if the quality gate trips (BEEP_FORCE=1)"
+        type: boolean
+        default: false
+
+concurrency: { group: refresh, cancel-in-progress: false } # never two writers at once
+permissions: { contents: write }
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npm test
+      - name: Run pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BEEP_FORCE: ${{ inputs.force && '1' || '' }}
+        run: npm run pipeline
+      - name: Build search index (smoke test)
+        run: npm run db
+      - name: Commit data
+        run: |
+          git config user.name "beep-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/posts.jsonl data/runs.jsonl
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          LIVE=$(node -e "const r=require('fs').readFileSync('data/runs.jsonl','utf8').trim().split('\n').pop();const j=JSON.parse(r);console.log(j.published+' live, '+j.llm.posts_tagged+' tagged, \$'+j.llm.cost_usd)")
+          git commit -m "data: daily refresh ($LIVE)"
+          git push
+      - name: Summary
+        run: |
+          node -e "const j=JSON.parse(require('fs').readFileSync('data/runs.jsonl','utf8').trim().split('\n').pop());console.log('## Beep refresh\n\n| metric | value |\n|---|---|\n'+[['live posts',j.published],['candidates',j.candidates],['duplicates removed',j.duplicates_removed],['tagged by LLM',j.llm.posts_tagged],['cache hits',j.llm.cache_hits],['rules fallback',j.llm.rules_fallback],['cost USD',j.llm.cost_usd],['receipts verified',j.receipts.verified]].map(([k,v])=>'| '+k+' | '+v+' |').join('\n'))" >> "$GITHUB_STEP_SUMMARY"
