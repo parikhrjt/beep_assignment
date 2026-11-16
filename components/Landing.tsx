@@ -4,12 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { Nav } from "./Nav";
 import { Receipt } from "./Receipt";
 import type { Stats } from "@/lib/stats";
+import type { Understood } from "@/lib/understand";
 import { ROLE_LABEL } from "@/lib/taxonomy";
 import { n } from "@/lib/format";
 
 type View = "human" | "ai";
+export type Example = { q: string; u: Understood; total: number };
 
-export function Landing({ s, md, initialView }: { s: Stats; md: string; initialView: View }) {
+export function Landing({ s, examples, md, initialView }: { s: Stats; examples: Example[]; md: string; initialView: View }) {
   const [view, setView] = useState<View>(initialView);
   const pick = (v: View) => {
     setView(v);
@@ -19,7 +21,7 @@ export function Landing({ s, md, initialView }: { s: Stats; md: string; initialV
     window.scrollTo(0, 0);
   };
   const toggle = (
-    <div className="toggle" data-view={view} role="group" aria-label="Choose who this page is for">
+    <div className="toggle" data-view={view} role="group" aria-label="Who is reading this page">
       <span className="knob" aria-hidden />
       <button aria-pressed={view === "human"} onClick={() => pick("human")}>Human</button>
       <button aria-pressed={view === "ai"} onClick={() => pick("ai")}>AI</button>
@@ -28,7 +30,7 @@ export function Landing({ s, md, initialView }: { s: Stats; md: string; initialV
   return (
     <>
       <Nav active="home" toggle={toggle} />
-      {view === "human" ? <Human s={s} /> : <AgentView md={md} />}
+      {view === "human" ? <Human s={s} examples={examples} /> : <AgentView md={md} />}
     </>
   );
 }
@@ -39,15 +41,15 @@ function AgentView({ md }: { md: string }) {
   return (
     <main className="ai-view wrap">
       <div className="ai-bar">
-        <span className="mono">beep.skill.md · {md.length.toLocaleString()} chars · same content as the human page, shaped for an agent</span>
+        <span>This is the same page, written as a skill file for AI agents. {md.length.toLocaleString()} characters.</span>
         <span style={{ display: "flex", gap: 8 }}>
-          <button className="btn btn-ghost btn-sm" onClick={async () => { await navigator.clipboard.writeText(md); setCopied(true); setTimeout(() => setCopied(false), 1600); }}>{copied ? "Copied ✓" : "Copy markdown"}</button>
-          <a className="btn btn-primary btn-sm" href="/llms.txt">Raw /llms.txt</a>
+          <button className="btn btn-ghost btn-sm" onClick={async () => { await navigator.clipboard.writeText(md); setCopied(true); setTimeout(() => setCopied(false), 1600); }}>{copied ? "Copied" : "Copy markdown"}</button>
+          <a className="btn btn-primary btn-sm" href="/llms.txt">Open /llms.txt</a>
         </span>
       </div>
       <pre className="ai-doc">
         {md.split("\n").map((l, i) => (
-          <span key={i} style={l.startsWith("#") ? { color: "var(--accent)", fontWeight: 600 } : l.startsWith("|") || l === "---" ? { color: "var(--muted)" } : l.startsWith(">") ? { color: "var(--ink)" } : undefined}>
+          <span key={i} style={l.startsWith("#") ? { color: "var(--ink)", fontWeight: 600 } : l.startsWith("|") || l === "---" ? { color: "var(--muted)" } : undefined}>
             {l}
             {"\n"}
           </span>
@@ -64,14 +66,20 @@ function Mark({ text, q }: { text: string; q: string }) {
   return <>{text.slice(0, i)}<mark>{text.slice(i, i + q.length)}</mark>{text.slice(i + q.length)}</>;
 }
 
-function Human({ s }: { s: Stats }) {
+const ist = (iso?: string) =>
+  iso ? new Date(iso).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "long", hour: "numeric", minute: "2-digit", hour12: true }) : null;
+const pc = (x?: number | null) => `${Math.round((x ?? 0) * 100)}%`;
+const EMP: Record<string, string> = { internship: "Internship", full_time: "Full time", contract: "Contract", apprenticeship: "Apprenticeship" };
+const MODE: Record<string, string> = { remote: "Remote", hybrid: "Hybrid", onsite: "On site" };
+
+function Human({ s, examples }: { s: Stats; examples: Example[] }) {
   const root = useRef<HTMLDivElement>(null);
   const ev = s.eval.holdout ?? s.eval.dev;
-  const evName = s.eval.holdout ? "held-out" : "dev";
   const cost = s.priced?.llm.cost_per_1k_usd ?? ev?.cost.per_1k_posts_usd ?? 0;
   const sample = s.sample;
-  const dupes = s.last?.duplicates_removed ?? 0;
-  const verbatimRate = ev ? ev.receipts.verbatim / ev.receipts.quotes_checked : s.verified / Math.max(1, s.total);
+  const updated = ist(s.last?.at);
+  const caught = s.caught;
+  const maxYears = Math.max(0, ...caught.map((c) => c.min_exp ?? 0));
 
   useEffect(() => {
     let alive = true;
@@ -81,40 +89,17 @@ function Human({ s }: { s: Stats }) {
       if (!alive || !root.current) return;
       gsap.registerPlugin(ScrollTrigger);
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const lenis = reduce ? null : new Lenis({ lerp: 0.085, wheelMultiplier: 0.95 });
+      const lenis = reduce ? null : new Lenis({ lerp: 0.1 });
       const raf = (t: number) => lenis?.raf(t * 1000);
       if (lenis) { lenis.on("scroll", ScrollTrigger.update); gsap.ticker.add(raf); gsap.ticker.lagSmoothing(0); }
 
       const ctx = gsap.context(() => {
         if (reduce) return;
         const q = gsap.utils.selector(root);
-        // Hero: headline lines rise, receipt prints, numbers count.
-        const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-        tl.from(q(".h1 .line > span"), { yPercent: 115, duration: 1.25, stagger: 0.09 })
-          .from(q(".hero .eyebrow, .lede, .cta-row"), { y: 18, opacity: 0, duration: 0.9, stagger: 0.08 }, "-=0.9")
-          .from(q(".printer .slot"), { scaleX: 0.6, opacity: 0, duration: 0.7 }, "-=1.1")
-          .from(q(".printer .receipt"), { yPercent: -100, duration: 2.6, ease: "steps(26)" }, "-=0.5")
-          .from(q(".hero-stats > div"), { y: 16, opacity: 0, duration: 0.7, stagger: 0.07 }, "-=2.2");
-        q("[data-count]").forEach((el) => {
-          const end = Number(el.getAttribute("data-count")), dec = Number(el.getAttribute("data-dec") || 0), pre = el.getAttribute("data-pre") || "", suf = el.getAttribute("data-suf") || "";
-          const o = { v: 0 };
-          gsap.to(o, { v: end, duration: 1.8, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 92%", once: true }, onUpdate: () => { el.textContent = pre + (dec ? o.v.toFixed(dec) : Math.round(o.v).toLocaleString("en-IN")) + suf; } });
-        });
-        // Receipt drifts up while the hero scrolls away.
-        gsap.to(q(".printer"), { yPercent: -18, rotate: -2.5, ease: "none", scrollTrigger: { trigger: q(".hero")[0], start: "top top", end: "bottom top", scrub: true } });
-        gsap.to(q(".glow"), { yPercent: 40, opacity: 0.3, ease: "none", scrollTrigger: { trigger: q(".hero")[0], start: "top top", end: "bottom top", scrub: true } });
-
-        // Manifesto: each word lights up as you read.
-        gsap.to(q(".manifesto .w"), { opacity: 1, stagger: 0.05, ease: "none", scrollTrigger: { trigger: q(".manifesto")[0], start: "top 78%", end: "bottom 42%", scrub: 0.6 } });
-
-        // Pipeline: pinned horizontal scroll on desktop.
-        const mm = gsap.matchMedia();
-        mm.add("(min-width: 861px)", () => {
-          const track = q(".pipe-track")[0] as HTMLElement;
-          const dist = () => Math.max(0, track.scrollWidth - window.innerWidth);
-          gsap.to(track, { x: () => -dist(), ease: "none", scrollTrigger: { trigger: q(".pipe")[0], start: "top top", end: () => `+=${dist() + window.innerHeight * 0.4}`, pin: true, scrub: 0.8, invalidateOnRefresh: true } });
-          gsap.to(q(".pipe-bar i"), { scaleX: 1, ease: "none", scrollTrigger: { trigger: q(".pipe")[0], start: "top top", end: () => `+=${dist() + window.innerHeight * 0.4}`, scrub: true } });
-        });
+        // The one page-load moment: the receipt prints, line by line.
+        gsap.timeline({ defaults: { ease: "expo.out" } })
+          .from(q(".printer .slot"), { scaleX: 0.6, opacity: 0, duration: 0.7 })
+          .from(q(".printer .receipt"), { yPercent: -100, duration: 2.6, ease: "steps(26)" }, "-=0.2");
 
         // Receipt feature: highlights snap on one by one, tags pop.
         gsap.timeline({ scrollTrigger: { trigger: q(".f-receipt")[0], start: "top 62%" } })
@@ -122,109 +107,47 @@ function Human({ s }: { s: Stats }) {
           .add(() => q(".f-receipt mark").forEach((m, i) => setTimeout(() => m.classList.add("on"), i * 380)))
           .from(q(".f-receipt .tagrow > *"), { scale: 0.6, opacity: 0, stagger: 0.12, duration: 0.5, ease: "back.out(2.2)" }, "+=0.9");
 
-        // Fake fresher: cards slide in, stamps slam.
-        gsap.timeline({ scrollTrigger: { trigger: q(".caught")[0], start: "top 70%" } })
-          .from(q(".caught-card"), { x: 60, opacity: 0, stagger: 0.14, duration: 0.8, ease: "power3.out" })
-          .from(q(".caught-card .stamp"), { scale: 2.6, opacity: 0, rotate: -18, stagger: 0.14, duration: 0.45, ease: "back.out(1.6)" }, "-=0.45");
-
-        // Ask: typewriter + cascade.
-        const typed = q(".ask .typed")[0] as HTMLElement | undefined;
-        if (typed) {
-          const full = typed.dataset.text || "";
-          typed.textContent = "";
-          const o = { i: 0 };
-          gsap.timeline({ scrollTrigger: { trigger: q(".ask")[0], start: "top 72%" } })
-            .to(o, { i: full.length, duration: full.length * 0.055, ease: "none", onUpdate: () => { typed.textContent = full.slice(0, Math.round(o.i)); } })
-            .from(q(".cascade > div"), { x: -26, opacity: 0, stagger: 0.18, duration: 0.55, ease: "power3.out" });
-        }
-
-        // Generic reveals.
-        q(".reveal").forEach((el) => gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 86%" } }));
-        gsap.from(q(".cards .card"), { y: 50, opacity: 0, stagger: 0.1, duration: 0.9, ease: "power3.out", scrollTrigger: { trigger: q(".cards")[0], start: "top 80%" } });
-        gsap.from(q(".mega span"), { yPercent: 100, stagger: 0.06, ease: "none", scrollTrigger: { trigger: q(".final")[0], start: "top 85%", end: "center 70%", scrub: 0.8 } });
+        // Funnel bars draw to their true width once, so the drop from thousands to hundreds is felt, not just read.
+        gsap.from(q(".l-funnel .bar i"), { scaleX: 0, duration: 1.1, stagger: 0.12, ease: "power2.out", scrollTrigger: { trigger: q(".l-funnel")[0], start: "top 75%" } });
       }, root);
       cleanup = () => { ctx.revert(); if (lenis) { gsap.ticker.remove(raf); lenis.destroy(); } };
     })();
     return () => { alive = false; cleanup(); };
   }, []);
 
-  const manifesto = "Other job boards ask you to trust their AI. Beep shows its work. Every role, every city, every “fresher” label carries a quote copied from the post, and code checks the quote is really there. No quote, no tag.";
-  const hot = new Set(["shows", "its", "work.", "quote", "No", "no", "tag."]);
-  const caught = s.caught.length ? s.caught : [];
+  const funnel: [string, string, number][] = [
+    ["Read from public job boards", `${s.boards} company boards on Greenhouse, Lever, Ashby and SmartRecruiters, plus the Himalayas API.`, s.fetched],
+    ["Located in India", "Indian cities, or remote roles open to people in India.", s.india],
+    ["Could suit a fresher", "A quick keyword check on title and text. It lets borderline posts through, because the AI decides next.", s.last?.candidates ?? 0],
+    ["After removing copies", `${n(s.last?.duplicates_removed ?? 0)} posts were the same job listed twice, or reworded.`, s.last?.after_dedupe ?? 0],
+    ["Live on Beep", `The AI read each post and hid ${n(s.rejected)} that ask for 2 or more years.`, s.live],
+  ];
 
   return (
     <div ref={root}>
       {/* HERO */}
-      <section className="hero">
-        <div className="grid-bg" aria-hidden />
-        <div className="glow" aria-hidden />
-        <div className="wrap hero-in">
+      <section className="l-hero">
+        <div className="wrap l-hero-in">
           <div>
-            <div className="eyebrow">India · fresher jobs &amp; internships · refreshed daily</div>
-            <h1 className="h1">
-              <span className="line"><span>Every AI tag</span></span>
-              <span className="line"><span>comes with a</span></span>
-              <span className="line"><span className="serif accent">receipt.</span></span>
-            </h1>
-            <p className="lede">Beep reads <b>{n(s.fetched)} job posts a day</b> from public hiring APIs, keeps the ones a fresher can actually get, and tags each by role and city. Every tag ships with the <b>exact sentence that proves it</b>. And we publish how often we are wrong.</p>
-            <div className="cta-row">
-              <Link className="btn btn-primary" href="/jobs">Search {n(s.live)} jobs →</Link>
-              <Link className="btn btn-ghost" href="/evals">See the evals</Link>
-            </div>
-            <div className="hero-stats">
-              <div><b data-count={s.live}>{n(s.live)}</b><span>live fresher posts</span></div>
-              <div><b data-count={s.rejected}>{n(s.rejected)}</b><span>fake “fresher” posts caught</span></div>
-              <div><b data-count={(ev?.llm.city.acc ?? 0) * 100} data-suf="%">{((ev?.llm.city.acc ?? 0) * 100).toFixed(0)}%</b><span>city accuracy ({evName})</span></div>
-              <div><b data-count={cost} data-dec="2" data-pre="$">${cost.toFixed(2)}</b><span>per 1,000 posts tagged</span></div>
-            </div>
+            <h1 className="l-h1">Jobs a fresher can actually get.</h1>
+            <p className="l-lede">
+              {n(s.live)} jobs and internships in India for people with 0 to 2 years of experience. Every role, city and &ldquo;fresher&rdquo; label comes with the sentence from the post that proves it.
+            </p>
+            <form className="l-search" action="/jobs" role="search">
+              <label htmlFor="hero-q" className="sr">Search jobs</label>
+              <input id="hero-q" name="q" placeholder={examples[0]?.q ?? "pune me backend internship"} autoComplete="off" />
+              <button className="btn btn-primary" type="submit">Search</button>
+            </form>
+            <p className="l-try">
+              Try{" "}
+              {examples.slice(1, 4).map((e) => <Link key={e.q} href={`/jobs?q=${encodeURIComponent(e.q)}`}>{e.q}</Link>)}
+            </p>
+            {updated && <p className="l-updated">Checked {n(s.fetched)} posts on {updated} IST. Next check tomorrow at 8:00 am.</p>}
           </div>
           <div className="printer" aria-label="Example tag receipt">
             <div className="slot" />
             <div className="feed">{sample && <Receipt p={sample} />}</div>
           </div>
-        </div>
-      </section>
-
-      <div className="marquee" aria-hidden>
-        {[0, 1].map((k) => <div className="track" key={k}>{[...s.names, "Himalayas", "Greenhouse", "Lever", "Ashby", "SmartRecruiters"].map((x, i) => <span key={i}>{x} ✦</span>)}</div>)}
-      </div>
-
-      {/* MANIFESTO */}
-      <section className="sec">
-        <div className="wrap">
-          <div className="eyebrow" style={{ marginBottom: 26 }}>The problem with AI job boards</div>
-          <p className="manifesto">{manifesto.split(" ").map((w, i) => <span key={i} className={`w${hot.has(w) ? " hot" : ""}`}>{w}</span>)}</p>
-        </div>
-      </section>
-
-      {/* PIPELINE */}
-      <section className="pipe">
-        <div className="wrap">
-          <div className="pipe-head">
-            <div>
-              <div className="eyebrow">Every night at 08:00 IST</div>
-              <h2 className="h2 wide" style={{ marginBottom: 0 }}>From {n(s.fetched)} posts to {n(s.live)} you can trust.</h2>
-            </div>
-            <p className="sub hide-m" style={{ maxWidth: 340 }}>One GitHub Actions run. No servers. Yesterday&apos;s data stays live if anything breaks.</p>
-          </div>
-          <div className="pipe-bar"><i /></div>
-        </div>
-        <div className="pipe-track">
-          {[
-            ["01", "Collect", `${s.boards} public job boards on Greenhouse, Lever, Ashby and SmartRecruiters, plus the Himalayas API. Documented APIs only, no scraping.`, n(s.fetched), "posts read"],
-            ["02", "Filter", "Keep Indian locations, then a cheap regex gate keeps anything that could be a fresher job. High recall here, the LLM decides later.", n(s.last?.candidates ?? 0), "fresher candidates"],
-            ["03", "Dedupe", "Three layers: exact source id, company + normalised title, and a 64-bit SimHash of the text for reworded copies.", n(dupes), "duplicates removed"],
-            ["04", "Tag + quote", "Gemini returns role, cities and a fresher verdict through a strict JSON schema. Each answer must come with a verbatim quote.", "3 quotes", `per post · ${s.last?.llm.model ?? "LLM"} · temp 0`],
-            ["05", "Verify", "Code checks every quote is a real substring of the post, and cross-checks the city with a deterministic gazetteer.", `${(verbatimRate * 100).toFixed(1)}%`, "quotes found verbatim"],
-            ["06", "Publish", "A quality gate blocks a collapsed run. The data is committed to git and baked into each deploy as a SQLite search index.", n(s.live), "live, searchable"],
-          ].map(([no, h, p, big, small]) => (
-            <div className="step" key={no}>
-              <div className="no">STEP {no}</div>
-              <h3>{h}</h3>
-              <p>{p}</p>
-              <div className="big">{big}<small>{small}</small></div>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -262,98 +185,145 @@ function Human({ s }: { s: Stats }) {
       </section>
 
       {/* FAKE FRESHER */}
-      <section className="sec">
-        <div className="wrap feat flip">
-          <div>
-            <div className="eyebrow">Fake-fresher detector</div>
-            <h2 className="h2">“Entry-level.” <span className="serif accent">Six years required.</span></h2>
-            <p className="sub">Titles lie. Beep reads the requirements, not the title, and gives every post a verdict: true fresher, early career, or fake fresher. Fake ones never reach your feed. {s.mislabeled > 0 && <><b style={{ color: "var(--ink)" }}>{n(s.mislabeled)} of {n(s.aggregator_total)}</b> posts that a job board itself labelled “Entry-level” asked for 2+ years.</>}</p>
-            <div className="cta-row"><Link className="btn btn-ghost" href="/jobs?rejected=1">Open the graveyard →</Link></div>
-          </div>
-          <div className="caught">
-            {caught.map((c) => (
-              <div className="caught-card" key={c.id}>
-                <span className="stamp">Fake fresher</span>
-                <h5>{c.title}</h5>
-                <div className="src">{c.company} · listed as Entry-level</div>
-                <div className="quote" style={{ margin: 0 }}>“{c.receipts.exp.quote}”</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ASK */}
-      <section className="sec">
-        <div className="wrap feat">
-          <div>
-            <div className="eyebrow">Search like you talk</div>
-            <h2 className="h2">Hinglish in. <span className="serif accent">Filters out.</span></h2>
-            <p className="sub">Type how you would ask a friend. A cascade picks the cheapest layer that understands you, so most searches cost zero tokens and answer in milliseconds. The LLM only wakes up when the rules give up.</p>
-            <ul className="bullets">
-              <li><span><b>Rules first.</b> City aliases (Bangalore, BLR, Bengaluru) and role words resolve in under a millisecond.</span></li>
-              <li><span><b>LLM second.</b> Only when nothing matches, with a 2.5 s timeout. If it is down, search still works.</span></li>
-              <li><span><b>CDN in front.</b> The same query is served from the edge cache until the next daily build.</span></li>
-            </ul>
-          </div>
-          <div className="panel">
-            <div className="ask"><span style={{ color: "var(--accent)" }}>›</span><span className="typed" data-text="pune me backend internship chahiye">pune me backend internship chahiye</span><span className="caret" /></div>
-            <div className="cascade">
-              <div><span>L0</span><span><b>Edge cache</b> · same URL, same answer</span><em>~20 ms</em></div>
-              <div><span>L1</span><span><b>Rules</b> · city=Pune · role=Software · type=internship</span><em>0 tokens</em></div>
-              <div><span>L2</span><span><b>LLM rewrite</b> · only if L1 finds nothing</span><em>≤ 2.5 s</em></div>
-              <div><span>DB</span><span><b>SQLite FTS5</b> · BM25 rank inside the function</span><em>&lt; 5 ms</em></div>
+      {caught.length > 0 && (
+        <section className="l-sec">
+          <div className="wrap l-split">
+            <div>
+              <h2 className="l-h2">Labelled entry-level. Asks for {maxYears} years.</h2>
+              <p className="l-p">
+                Job boards trust the title. Beep reads the requirements. {s.mislabeled > 0 && <>Of the {n(s.aggregator_total)} posts Himalayas marked &ldquo;Entry-level&rdquo;, {n(s.mislabeled)} asked for 2 years or more. </>}Beep hides these posts from search, with the sentence that gave them away.
+              </p>
+              <p className="l-p"><Link className="l-link" href="/jobs?rejected=1">See all {n(s.rejected)} hidden posts</Link></p>
+            </div>
+            <div className="l-sheet">
+              <span className="l-stamp" aria-hidden>Not for freshers</span>
+              <table>
+                <thead><tr><th>Post</th><th className="yrs">Asks for</th></tr></thead>
+                <tbody>
+                  {caught.map((c) => (
+                    <tr key={c.id}>
+                      <td>
+                        <b>{c.title}</b>
+                        <span className="co">{c.company}</span>
+                        <q>{c.receipts.exp.quote}</q>
+                      </td>
+                      <td className="yrs">{c.min_exp}+ yrs</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
+        </section>
+      )}
+
+      {/* FUNNEL */}
+      <section className="l-sec">
+        <div className="wrap">
+          <h2 className="l-h2">What happened to the last {n(s.fetched)} posts we read.</h2>
+          <p className="l-p">One automated run every morning. Most posts are not for freshers in India, so most are dropped.</p>
+          <ol className="l-funnel">
+            {funnel.map(([h, p, v], i) => (
+              <li key={h} className={i === funnel.length - 1 ? "last" : undefined}>
+                <div className="txt"><h3>{h}</h3><p>{p}</p></div>
+                <div className="val">{n(v)}</div>
+                <div className="bar" aria-hidden><i style={{ width: `${Math.max(0.4, (v / Math.max(1, s.fetched)) * 100)}%` }} /></div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      {/* NUMBERS */}
-      <section className="sec">
-        <div className="wrap">
-          <div className="eyebrow">Measured, not claimed</div>
-          <h2 className="h2 wide">We hand-checked the AI. <span className="serif accent">Here is the score.</span></h2>
-          <p className="sub">{ev?.n ?? 50} posts were labelled by hand without looking at the model output, then scored with 95% confidence intervals. Every post and every miss is public on the evals page.</p>
-          <div className="nums">
-            <div className="num"><b data-count={(ev?.llm.role_lenient.acc ?? 0) * 100} data-suf="%">{((ev?.llm.role_lenient.acc ?? 0) * 100).toFixed(0)}%</b><span>Role accuracy</span><small>{evName} set · rules-only baseline {((ev?.rules_baseline.role_lenient.acc ?? 0) * 100).toFixed(0)}%</small></div>
-            <div className="num"><b data-count={(ev?.llm.city.acc ?? 0) * 100} data-suf="%">{((ev?.llm.city.acc ?? 0) * 100).toFixed(0)}%</b><span>City accuracy</span><small>exact match of the full city set</small></div>
-            <div className="num"><b data-count={(ev?.llm.verdict.acc ?? 0) * 100} data-suf="%">{((ev?.llm.verdict.acc ?? 0) * 100).toFixed(0)}%</b><span>Fresher verdict</span><small>on {ev?.llm.verdict.n ?? 0} posts a human could decide</small></div>
-            <div className="num"><b data-count={cost} data-dec="2" data-pre="$">${cost.toFixed(2)}</b><span>Per 1,000 posts</span><small>measured tokens × list price · $0 on re-runs</small></div>
+      {/* SEARCH */}
+      {examples.length > 0 && (
+        <section className="l-sec">
+          <div className="wrap l-split">
+            <div>
+              <h2 className="l-h2">Search the way you&rsquo;d ask a friend.</h2>
+              <p className="l-p">Hinglish works. City nicknames work: Bangalore, BLR and Bengaluru are the same place. Plain rules understand most searches in under a millisecond. The AI is asked only when the rules find nothing.</p>
+            </div>
+            <ul className="l-examples">
+              {examples.map((e) => (
+                <li key={e.q}>
+                  <Link href={`/jobs?q=${encodeURIComponent(e.q)}`}>
+                    <span className="q">{e.q}</span>
+                    <span className="parsed">
+                      {e.u.cities.map((c) => <span key={c}><small>City</small>{c}</span>)}
+                      {e.u.roles.map((r) => <span key={r}><small>Role</small>{ROLE_LABEL[r] ?? r}</span>)}
+                      {e.u.employment && <span><small>Type</small>{EMP[e.u.employment] ?? e.u.employment}</span>}
+                      {e.u.mode && <span><small>Where</small>{MODE[e.u.mode] ?? e.u.mode}</span>}
+                    </span>
+                    <span className="count">{n(e.total)} {e.total === 1 ? "job" : "jobs"}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="cta-row"><Link className="btn btn-ghost" href="/evals">Read every labelled post →</Link></div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* ENGINEERING */}
-      <section className="sec">
-        <div className="wrap">
-          <div className="eyebrow">Built to stay up</div>
-          <h2 className="h2 wide">Boring infrastructure. <span className="serif accent">On purpose.</span></h2>
-          <div className="cards">
-            <div className="card"><div className="ix">01 · ZERO DB HOP</div><h4>The database ships with the code</h4><p>A read-only SQLite FTS5 file is baked into every deploy. Search scales with the functions. No pool, no cold DB, nothing to page you at 3 am.</p></div>
-            <div className="card"><div className="ix">02 · PAY ONCE</div><h4>Content-hash cache</h4><p>A post is only sent to the LLM when its text, the prompt or the model changes. A quiet day costs close to $0.</p></div>
-            <div className="card"><div className="ix">03 · FAIL STATIC</div><h4>Quality gate + grace window</h4><p>A run that loses 40% of posts is refused. A source that hiccups keeps its posts for 2 days. The site never goes blank.</p></div>
-            <div className="card"><div className="ix">04 · EVALS AS CI</div><h4>Prompts are code</h4><p>Every prompt has a hash. A change that drops accuracy below the gate fails the build before it reaches users.</p></div>
+      {/* ACCURACY */}
+      {ev && (
+        <section className="l-sec">
+          <div className="wrap l-split">
+            <div>
+              <h2 className="l-h2">How often the AI gets it wrong.</h2>
+              <p className="l-p">We labelled {ev.n} posts the AI had never seen, without looking at its answers, then scored it. With {ev.n} posts the true accuracy could sit anywhere in the range shown.</p>
+              <p className="l-p">Tagging costs ${cost.toFixed(2)} per 1,000 posts. A post is sent to the AI again only when its text changes.</p>
+              {ev.human_verified === 0 && <p className="l-p l-fine">The labels were written blind by an AI-assisted pass. A person has not reviewed them yet.</p>}
+              <p className="l-p"><Link className="l-link" href="/evals">See every labelled post and every miss</Link></p>
+            </div>
+            <table className="l-score">
+              <thead><tr><th>Tag</th><th className="r">Beep</th><th className="r">Range</th><th className="r">Rules only</th></tr></thead>
+              <tbody>
+                {([
+                  ["Role", ev.llm.role_lenient, ev.rules_baseline.role_lenient],
+                  ["City", ev.llm.city, ev.rules_baseline.city],
+                  ["Role and city both right", ev.llm.role_and_city, ev.rules_baseline.role_and_city],
+                  ["Fresher or not", ev.llm.verdict, ev.rules_baseline.verdict],
+                ] as const).map(([k, p, b]) => (
+                  <tr key={k}>
+                    <td>{k}<div className="ci" aria-hidden><u style={{ left: `${p.ci95[0] * 100}%`, width: `${(p.ci95[1] - p.ci95[0]) * 100}%` }} /><i style={{ left: `${(p.acc ?? 0) * 100}%` }} /></div></td>
+                    <td className="r big">{pc(p.acc)}</td>
+                    <td className="r">{pc(p.ci95[0])} to {pc(p.ci95[1])}</td>
+                    <td className="r dim">{b?.acc == null ? "n/a" : pc(b.acc)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+        </section>
+      )}
+
+      {/* FAILURES */}
+      <section className="l-sec">
+        <div className="wrap">
+          <h2 className="l-h2">When something breaks, yesterday&rsquo;s jobs stay up.</h2>
+          <dl className="l-fail">
+            <div><dt>A job board stops answering</dt><dd>Its posts stay listed for 2 more days. Other boards are not affected.</dd></div>
+            <div><dt>The morning run finds far fewer jobs than usual</dt><dd>The run is not published. The site keeps yesterday&rsquo;s list.</dd></div>
+            <div><dt>The AI fails on a post</dt><dd>Plain rules tag it instead, and its receipt says &ldquo;needs review&rdquo;.</dd></div>
+            <div><dt>The search AI is slow</dt><dd>After 2.5 seconds, search goes on without it.</dd></div>
+            <div><dt>Lots of people search at once</dt><dd>Repeat searches come from the CDN cache. The search index ships inside each server, so there is no database to overload.</dd></div>
+            <div><dt>A prompt change makes tagging worse</dt><dd>The build fails before it reaches the site. Accuracy is tested on every change.</dd></div>
+          </dl>
         </div>
       </section>
 
-      {/* FINAL */}
-      <section className="final">
+      {/* CLOSE */}
+      <section className="l-close">
         <div className="wrap">
-          <div className="mega" aria-label="beep.">{"beep".split("").map((c, i) => <span key={i} style={{ display: "inline-block" }}>{c}</span>)}<span style={{ display: "inline-block" }}><i>.</i></span></div>
-          <p className="sub" style={{ margin: "26px auto 30px" }}>The job board that shows its work.</p>
-          <div className="cta-row" style={{ justifyContent: "center" }}>
-            <Link className="btn btn-primary" href="/jobs">Find your first job →</Link>
+          <h2 className="l-h2">{n(s.live)} jobs, checked every morning.</h2>
+          <div className="l-actions">
+            <Link className="btn btn-primary" href="/jobs">Search jobs</Link>
             <a className="btn btn-ghost" href="https://github.com/vinitpatil519/beep" target="_blank" rel="noopener noreferrer">Read the code</a>
           </div>
         </div>
       </section>
       <footer className="foot">
         <div className="wrap">
-          <span>Beep · data refreshed {s.last ? new Date(s.last.at).toUTCString().slice(5, 22) + " UTC" : "daily"}</span>
-          <span>Jobs from public APIs of Greenhouse, Lever, Ashby, SmartRecruiters and <a href="https://himalayas.app" target="_blank" rel="noopener noreferrer">Himalayas</a>. Apply links go to the original post.</span>
-          <span><a href="/llms.txt">llms.txt</a> · <a href="/api/health">status</a></span>
+          <span>Jobs come from the public APIs of Greenhouse, Lever, Ashby, SmartRecruiters and <a href="https://himalayas.app" target="_blank" rel="noopener noreferrer">Himalayas</a>. Apply links go to the original post.</span>
+          <span className="foot-links"><a href="/llms.txt">llms.txt</a><a href="/api/health">Status</a><a href="https://github.com/vinitpatil519/beep" target="_blank" rel="noopener noreferrer">GitHub</a></span>
         </div>
       </footer>
     </div>

@@ -98,3 +98,9 @@ export function getPost(id: string): (Hit & { text: string }) | null {
   const r = db().prepare("SELECT * FROM posts WHERE id = ?").get(id);
   return r ? (row(r) as Hit & { text: string }) : null;
 }
+
+/** Rules-only parse plus a live count, for the landing page examples. Never calls the LLM, so it cannot slow a page render. */
+export function countRules(q: string): { q: string; u: Understood; total: number } {
+  const u = understandRules(q);
+  return { q, u, total: run(parseParams(new URLSearchParams()), u, "AND").total };
+}
