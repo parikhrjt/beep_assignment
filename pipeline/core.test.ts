@@ -4,7 +4,7 @@ import { gazetteer } from "../lib/taxonomy.ts";
 import { understandRules } from "../lib/understand.ts";
 import { dedupe, hamming, normTitle, simhash } from "./dedupe.ts";
 import { looksFresher } from "./sources/index.ts";
-import { rulesTag, verify } from "./tagger/index.ts";
+import { minYears, rulesTag, verdictFor, verify } from "./tagger/index.ts";
 import { excerpt } from "./tagger/prompt.ts";
 import type { RawPost } from "./types.ts";
 
@@ -93,4 +93,33 @@ test("excerpt keeps requirement lines that sit deep in the text", () => {
   const e = excerpt(text);
   assert.ok(e.length <= 2200);
   assert.ok(e.includes("3+ years of experience"));
+});
+
+test("minYears reads the lowest stated requirement, and only from experience quotes", () => {
+  assert.equal(minYears("A minimum of 2+ years of experience"), 2);
+  assert.equal(minYears("2–4 years of experience in voice and non-voice customer service"), 2);
+  assert.equal(minYears("At least 0-2 years experience in trading"), 0);
+  assert.equal(minYears("3-6 months of experience in social media"), 0.25);
+  assert.equal(minYears("Freshers – 4-5 years of experience"), 0);
+  assert.equal(minYears("three years of experience"), 3);
+  assert.equal(minYears("Entry Level (1-3 years of experience)"), 1);
+  assert.equal(minYears("graduated within 2 years"), null);
+  assert.equal(minYears("Bachelor's degree required"), null);
+});
+
+test("verdict policy: more than 2 years is experienced, internships are fresher", () => {
+  assert.equal(verdictFor(2, "full_time"), "early");
+  assert.equal(verdictFor(3, "full_time"), "experienced");
+  assert.equal(verdictFor(1, "internship"), "fresher");
+  assert.equal(verdictFor(0, "full_time"), "fresher");
+});
+
+test("verify drops a city the model inferred for a remote job, and keeps a quoted one", () => {
+  const base = { title: "NET Developer", company: "X", location_raw: "Remote, India", text: "Our head office is in Bengaluru. 1+ years of development experience." };
+  const t = rulesTag(base);
+  t.cities = ["Bengaluru", "Remote"]; t.receipts.city.quote = "Remote, India";
+  assert.deepEqual(verify(base, t).cities, ["Remote"]);
+  const t2 = rulesTag(base);
+  t2.cities = ["Bengaluru", "Remote"]; t2.receipts.city.quote = "head office is in Bengaluru";
+  assert.deepEqual(verify(base, t2).cities.sort(), ["Bengaluru", "Remote"]);
 });

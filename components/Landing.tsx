@@ -41,7 +41,7 @@ function AgentView({ md }: { md: string }) {
   return (
     <main className="ai-view wrap">
       <div className="ai-bar">
-        <span>This is the same page, written as a skill file for AI agents. {md.length.toLocaleString()} characters.</span>
+        <span>The same page, written as a skill file for AI agents ({md.length.toLocaleString()} characters).</span>
         <span style={{ display: "flex", gap: 8 }}>
           <button className="btn btn-ghost btn-sm" onClick={async () => { await navigator.clipboard.writeText(md); setCopied(true); setTimeout(() => setCopied(false), 1600); }}>{copied ? "Copied" : "Copy markdown"}</button>
           <a className="btn btn-primary btn-sm" href="/llms.txt">Open /llms.txt</a>
@@ -89,7 +89,7 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
       if (!alive || !root.current) return;
       gsap.registerPlugin(ScrollTrigger);
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const lenis = reduce ? null : new Lenis({ lerp: 0.1 });
+      const lenis = reduce ? null : new Lenis({ lerp: 0.12 });
       const raf = (t: number) => lenis?.raf(t * 1000);
       if (lenis) { lenis.on("scroll", ScrollTrigger.update); gsap.ticker.add(raf); gsap.ticker.lagSmoothing(0); }
 
@@ -107,8 +107,8 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
           .add(() => q(".f-receipt mark").forEach((m, i) => setTimeout(() => m.classList.add("on"), i * 380)))
           .from(q(".f-receipt .tagrow > *"), { scale: 0.6, opacity: 0, stagger: 0.12, duration: 0.5, ease: "back.out(2.2)" }, "+=0.9");
 
-        // Funnel bars draw to their true width once, so the drop from thousands to hundreds is felt, not just read.
-        gsap.from(q(".l-funnel .bar i"), { scaleX: 0, duration: 1.1, stagger: 0.12, ease: "power2.out", scrollTrigger: { trigger: q(".l-funnel")[0], start: "top 75%" } });
+        // Funnel bars draw to their true width once, so the drop from thousands to hundreds is seen, not just read.
+        gsap.from(q(".l-funnel .bar i"), { scaleX: 0, duration: 1.1, stagger: 0.1, ease: "power2.out", scrollTrigger: { trigger: q(".l-funnel")[0], start: "top 78%" } });
       }, root);
       cleanup = () => { ctx.revert(); if (lenis) { gsap.ticker.remove(raf); lenis.destroy(); } };
     })();
@@ -116,11 +116,11 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
   }, []);
 
   const funnel: [string, string, number][] = [
-    ["Read from public job boards", `${s.boards} company boards on Greenhouse, Lever, Ashby and SmartRecruiters, plus the Himalayas API.`, s.fetched],
-    ["Located in India", "Indian cities, or remote roles open to people in India.", s.india],
-    ["Could suit a fresher", "A quick keyword check on title and text. It lets borderline posts through, because the AI decides next.", s.last?.candidates ?? 0],
-    ["After removing copies", `${n(s.last?.duplicates_removed ?? 0)} posts were the same job listed twice, or reworded.`, s.last?.after_dedupe ?? 0],
-    ["Live on Beep", `The AI read each post and hid ${n(s.rejected)} that ask for 2 or more years.`, s.live],
+    ["Read", `${s.boards} company job boards on Greenhouse, Lever, Ashby and SmartRecruiters, plus the Himalayas API`, s.fetched],
+    ["In India", "An Indian city, or remote and open to people in India", s.india],
+    ["Could suit a fresher", "A quick keyword check. Borderline posts go through, because the AI decides next", s.last?.candidates ?? 0],
+    ["Copies removed", `${n(s.last?.duplicates_removed ?? 0)} were the same job posted twice, or reworded`, s.last?.after_dedupe ?? 0],
+    ["Live", `The AI read every post and hid ${n(s.rejected)} that ask for more than 2 years`, s.live],
   ];
 
   return (
@@ -129,9 +129,9 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
       <section className="l-hero">
         <div className="wrap l-hero-in">
           <div>
-            <h1 className="l-h1">Jobs a fresher can actually get.</h1>
+            <h1 className="l-h1 display">Jobs a fresher can actually get</h1>
             <p className="l-lede">
-              {n(s.live)} jobs and internships in India for people with 0 to 2 years of experience. Every role, city and &ldquo;fresher&rdquo; label comes with the sentence from the post that proves it.
+              {n(s.live)} jobs and internships in India for 0 to 2 years of experience. Each role, city and fresher label shows the sentence from the post that proves it.
             </p>
             <form className="l-search" action="/jobs" role="search">
               <label htmlFor="hero-q" className="sr">Search jobs</label>
@@ -142,7 +142,6 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
               Try{" "}
               {examples.slice(1, 4).map((e) => <Link key={e.q} href={`/jobs?q=${encodeURIComponent(e.q)}`}>{e.q}</Link>)}
             </p>
-            {updated && <p className="l-updated">Checked {n(s.fetched)} posts on {updated} IST. Next check tomorrow at 8:00 am.</p>}
           </div>
           <div className="printer" aria-label="Example tag receipt">
             <div className="slot" />
@@ -151,13 +150,39 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
         </div>
       </section>
 
+      {/* LATEST */}
+      {s.latest.length > 0 && (
+        <section className="l-sec">
+          <div className="wrap">
+            <div className="l-head">
+              <div>
+                <h2 className="l-h2 display">New fresher jobs</h2>
+                {updated && <p className="l-p">Checked {n(s.fetched)} posts on {updated} IST. Each line in green is copied from the post.</p>}
+              </div>
+              <Link className="link" href="/jobs?sort=newest">See all {n(s.live)} jobs</Link>
+            </div>
+            <ul className="l-jobs">
+              {s.latest.map((j) => (
+                <li key={j.id}>
+                  <a href={j.apply_url} target="_blank" rel="noopener noreferrer nofollow">
+                    <h3>{j.title}</h3>
+                    <div className="where">{j.company}, {j.cities.join(" and ")}</div>
+                    {j.receipts.exp.quote && <div className="why">Fresher <q>{j.receipts.exp.quote}</q></div>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* RECEIPTS */}
       <section className="sec f-receipt">
         <div className="wrap feat">
           <div>
             <div className="eyebrow">Hero feature · Receipts</div>
             <h2 className="h2">No quote, <span className="serif accent">no tag.</span></h2>
-            <p className="sub">LLMs are confident even when they are wrong. So Beep never takes a tag on faith. The model has to point at the words in the post that justify each tag, and plain code checks that those words are really there.</p>
+            <p className="sub">LLMs are confident even when they are wrong. So beep-jobs never takes a tag on faith. The model has to point at the words in the post that justify each tag, and plain code checks that those words are really there.</p>
             <ul className="bullets">
               <li><span><b>Hallucinations become visible.</b> A made-up quote fails the substring check and the post is marked “needs review”.</span></li>
               <li><span><b>Two independent signals.</b> The LLM city must agree with a rule-based gazetteer. Disagreement lowers trust automatically.</span></li>
@@ -184,16 +209,16 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
         </div>
       </section>
 
-      {/* FAKE FRESHER */}
+      {/* HIDDEN POSTS */}
       {caught.length > 0 && (
         <section className="l-sec">
           <div className="wrap l-split">
             <div>
-              <h2 className="l-h2">Labelled entry-level. Asks for {maxYears} years.</h2>
+              <h2 className="l-h2 display">Labelled entry-level, asks for {maxYears} years</h2>
               <p className="l-p">
-                Job boards trust the title. Beep reads the requirements. {s.mislabeled > 0 && <>Of the {n(s.aggregator_total)} posts Himalayas marked &ldquo;Entry-level&rdquo;, {n(s.mislabeled)} asked for 2 years or more. </>}Beep hides these posts from search, with the sentence that gave them away.
+                Job boards trust the title. beep-jobs reads the requirements. {s.mislabeled > 0 && <>Of the {n(s.aggregator_total)} posts Himalayas marked &ldquo;Entry-level&rdquo;, {n(s.mislabeled)} asked for more than 2 years. </>}These posts are hidden from search, with the sentence that gave them away.
               </p>
-              <p className="l-p"><Link className="l-link" href="/jobs?rejected=1">See all {n(s.rejected)} hidden posts</Link></p>
+              <p className="l-p"><Link className="link" href="/jobs?rejected=1">See all {n(s.rejected)} hidden posts</Link></p>
             </div>
             <div className="l-sheet">
               <span className="l-stamp" aria-hidden>Not for freshers</span>
@@ -207,7 +232,7 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
                         <span className="co">{c.company}</span>
                         <q>{c.receipts.exp.quote}</q>
                       </td>
-                      <td className="yrs">{c.min_exp}+ yrs</td>
+                      <td className="yrs">{c.min_exp}+ years</td>
                     </tr>
                   ))}
                 </tbody>
@@ -220,14 +245,16 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
       {/* FUNNEL */}
       <section className="l-sec">
         <div className="wrap">
-          <h2 className="l-h2">What happened to the last {n(s.fetched)} posts we read.</h2>
-          <p className="l-p">One automated run every morning. Most posts are not for freshers in India, so most are dropped.</p>
+          <div className="l-head">
+            <h2 className="l-h2 display">From {n(s.fetched)} posts to {n(s.live)}</h2>
+            <p className="l-p" style={{ marginTop: 0, maxWidth: "38ch" }}>One automated run every morning at 8:00 IST. Bars are drawn to scale.</p>
+          </div>
           <ol className="l-funnel">
             {funnel.map(([h, p, v], i) => (
               <li key={h} className={i === funnel.length - 1 ? "last" : undefined}>
-                <div className="txt"><h3>{h}</h3><p>{p}</p></div>
+                <div><h3>{h}</h3><p>{p}</p></div>
+                <div className="bar" aria-hidden><i style={{ width: `${Math.max(0.5, (v / Math.max(1, s.fetched)) * 100)}%` }} /></div>
                 <div className="val">{n(v)}</div>
-                <div className="bar" aria-hidden><i style={{ width: `${Math.max(0.4, (v / Math.max(1, s.fetched)) * 100)}%` }} /></div>
               </li>
             ))}
           </ol>
@@ -239,21 +266,21 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
         <section className="l-sec">
           <div className="wrap l-split">
             <div>
-              <h2 className="l-h2">Search the way you&rsquo;d ask a friend.</h2>
-              <p className="l-p">Hinglish works. City nicknames work: Bangalore, BLR and Bengaluru are the same place. Plain rules understand most searches in under a millisecond. The AI is asked only when the rules find nothing.</p>
+              <h2 className="l-h2 display">Search the way you&rsquo;d ask a friend</h2>
+              <p className="l-p">Hinglish works, and so do city nicknames: Bangalore, BLR and Bengaluru are one place. Plain rules read most searches in under a millisecond. The AI is asked only when the rules find nothing.</p>
             </div>
             <ul className="l-examples">
               {examples.map((e) => (
                 <li key={e.q}>
                   <Link href={`/jobs?q=${encodeURIComponent(e.q)}`}>
                     <span className="q">{e.q}</span>
+                    <span className="count">{n(e.total)} {e.total === 1 ? "job" : "jobs"}</span>
                     <span className="parsed">
                       {e.u.cities.map((c) => <span key={c}><small>City</small>{c}</span>)}
                       {e.u.roles.map((r) => <span key={r}><small>Role</small>{ROLE_LABEL[r] ?? r}</span>)}
                       {e.u.employment && <span><small>Type</small>{EMP[e.u.employment] ?? e.u.employment}</span>}
                       {e.u.mode && <span><small>Where</small>{MODE[e.u.mode] ?? e.u.mode}</span>}
                     </span>
-                    <span className="count">{n(e.total)} {e.total === 1 ? "job" : "jobs"}</span>
                   </Link>
                 </li>
               ))}
@@ -267,14 +294,14 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
         <section className="l-sec">
           <div className="wrap l-split">
             <div>
-              <h2 className="l-h2">How often the AI gets it wrong.</h2>
-              <p className="l-p">We labelled {ev.n} posts the AI had never seen, without looking at its answers, then scored it. With {ev.n} posts the true accuracy could sit anywhere in the range shown.</p>
-              <p className="l-p">Tagging costs ${cost.toFixed(2)} per 1,000 posts. A post is sent to the AI again only when its text changes.</p>
+              <h2 className="l-h2 display">How often the AI is wrong</h2>
+              <p className="l-p">{ev.n} posts the AI had never seen were labelled without looking at its answers, then scored. The range is a 95% confidence interval.</p>
+              <p className="l-p">Tagging costs ${cost.toFixed(2)} per 1,000 posts. A post goes back to the AI only when its text changes.</p>
               {ev.human_verified === 0 && <p className="l-p l-fine">The labels were written blind by an AI-assisted pass. A person has not reviewed them yet.</p>}
-              <p className="l-p"><Link className="l-link" href="/evals">See every labelled post and every miss</Link></p>
+              <p className="l-p"><Link className="link" href="/evals">See every labelled post and every miss</Link></p>
             </div>
             <table className="l-score">
-              <thead><tr><th>Tag</th><th className="r">Beep</th><th className="r">Range</th><th className="r">Rules only</th></tr></thead>
+              <thead><tr><th>Tag</th><th className="r">beep-jobs</th><th className="r">Range</th><th className="r">Rules only</th></tr></thead>
               <tbody>
                 {([
                   ["Role", ev.llm.role_lenient, ev.rules_baseline.role_lenient],
@@ -286,7 +313,7 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
                     <td>{k}<div className="ci" aria-hidden><u style={{ left: `${p.ci95[0] * 100}%`, width: `${(p.ci95[1] - p.ci95[0]) * 100}%` }} /><i style={{ left: `${(p.acc ?? 0) * 100}%` }} /></div></td>
                     <td className="r big">{pc(p.acc)}</td>
                     <td className="r">{pc(p.ci95[0])} to {pc(p.ci95[1])}</td>
-                    <td className="r dim">{b?.acc == null ? "n/a" : pc(b.acc)}</td>
+                    <td className="r">{b?.acc == null ? "n/a" : pc(b.acc)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -298,13 +325,13 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
       {/* FAILURES */}
       <section className="l-sec">
         <div className="wrap">
-          <h2 className="l-h2">When something breaks, yesterday&rsquo;s jobs stay up.</h2>
+          <div className="l-head"><h2 className="l-h2 display">When something breaks</h2></div>
           <dl className="l-fail">
             <div><dt>A job board stops answering</dt><dd>Its posts stay listed for 2 more days. Other boards are not affected.</dd></div>
-            <div><dt>The morning run finds far fewer jobs than usual</dt><dd>The run is not published. The site keeps yesterday&rsquo;s list.</dd></div>
+            <div><dt>The morning run finds far fewer jobs</dt><dd>The run is not published. The site keeps yesterday&rsquo;s list.</dd></div>
             <div><dt>The AI fails on a post</dt><dd>Plain rules tag it instead, and its receipt says &ldquo;needs review&rdquo;.</dd></div>
             <div><dt>The search AI is slow</dt><dd>After 2.5 seconds, search goes on without it.</dd></div>
-            <div><dt>Lots of people search at once</dt><dd>Repeat searches come from the CDN cache. The search index ships inside each server, so there is no database to overload.</dd></div>
+            <div><dt>Many people search at once</dt><dd>Repeat searches come from the CDN cache. The search index ships inside each server, so there is no database to overload.</dd></div>
             <div><dt>A prompt change makes tagging worse</dt><dd>The build fails before it reaches the site. Accuracy is tested on every change.</dd></div>
           </dl>
         </div>
@@ -313,17 +340,17 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
       {/* CLOSE */}
       <section className="l-close">
         <div className="wrap">
-          <h2 className="l-h2">{n(s.live)} jobs, checked every morning.</h2>
+          <h2 className="l-h2 display">{n(s.live)} jobs, checked every morning</h2>
           <div className="l-actions">
             <Link className="btn btn-primary" href="/jobs">Search jobs</Link>
-            <a className="btn btn-ghost" href="https://github.com/vinitpatil519/beep" target="_blank" rel="noopener noreferrer">Read the code</a>
+            <a className="btn btn-ghost" href="https://github.com/vinitpatil519/beep-jobs" target="_blank" rel="noopener noreferrer">Read the code</a>
           </div>
         </div>
       </section>
       <footer className="foot">
         <div className="wrap">
           <span>Jobs come from the public APIs of Greenhouse, Lever, Ashby, SmartRecruiters and <a href="https://himalayas.app" target="_blank" rel="noopener noreferrer">Himalayas</a>. Apply links go to the original post.</span>
-          <span className="foot-links"><a href="/llms.txt">llms.txt</a><a href="/api/health">Status</a><a href="https://github.com/vinitpatil519/beep" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+          <span className="foot-links"><a href="/llms.txt">llms.txt</a><a href="/api/health">Status</a><a href="https://github.com/vinitpatil519/beep-jobs" target="_blank" rel="noopener noreferrer">GitHub</a></span>
         </div>
       </footer>
     </div>

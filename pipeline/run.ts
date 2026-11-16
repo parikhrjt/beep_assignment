@@ -11,7 +11,7 @@ import { sha1, today } from "./util.ts";
 const POSTS = new URL("../data/posts.jsonl", import.meta.url);
 const RUNS = new URL("../data/runs.jsonl", import.meta.url);
 const GRACE_DAYS = 2; // a post missing from one run is kept this long, so a flaky source never empties the board
-const log = (s: string) => console.log(`[beep ${new Date().toISOString().slice(11, 19)}] ${s}`);
+const log = (s: string) => console.log(`[beep-jobs ${new Date().toISOString().slice(11, 19)}] ${s}`);
 
 export const readPosts = (): Post[] => (existsSync(POSTS) ? readFileSync(POSTS, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)) : []);
 
@@ -51,9 +51,9 @@ async function main() {
     next.set(c.id, post);
   }
   log(`tagging: ${todo.length} new/changed, ${cacheHits} cache hits, model=${MODEL} prompt=${PROMPT_V}`);
-  if (todo.length && !process.env.GEMINI_API_KEY && !process.env.BEEP_ALLOW_RULES) {
+  if (todo.length && !process.env.GEMINI_API_KEY && !process.env.BEEP_JOBS_ALLOW_RULES) {
     // Fail loud instead of silently publishing rules-only tags: a missing secret is a config bug, not an outage.
-    log("GEMINI_API_KEY is not set. Refusing to tag. Set the secret, or BEEP_ALLOW_RULES=1 to publish rules-only tags.");
+    log("GEMINI_API_KEY is not set. Refusing to tag. Set the secret, or BEEP_JOBS_ALLOW_RULES=1 to publish rules-only tags.");
     process.exit(3);
   }
   const tags = await tagAll(todo.map((p) => ({ ...p, employment_hint: (p as any).employment_hint })), usage, { log });
@@ -74,7 +74,7 @@ async function main() {
   const live = all.filter((p) => p.tags.verdict !== "experienced");
 
   // Quality gate: refuse to publish a collapse. Yesterday's good data stays live.
-  if (prev.size >= 100 && all.length < prev.size * 0.6 && !process.env.BEEP_FORCE) {
+  if (prev.size >= 100 && all.length < prev.size * 0.6 && !process.env.BEEP_JOBS_FORCE) {
     log(`QUALITY GATE: ${all.length} posts vs ${prev.size} yesterday (<60%). Not publishing.`);
     process.exit(2);
   }

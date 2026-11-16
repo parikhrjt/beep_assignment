@@ -58,7 +58,7 @@ export async function understandLLM(q: string, timeoutMs = 2500): Promise<Unders
   const k = q.toLowerCase().trim();
   if (lru.has(k)) return lru.get(k)!;
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${process.env.BEEP_MODEL || "gemini-3.5-flash-lite"}:generateContent`, {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${process.env.BEEP_JOBS_MODEL || "gemini-3.5-flash-lite"}:generateContent`, {
       method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": key }, signal: AbortSignal.timeout(timeoutMs),
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: `Turn a job-search query (English, Hindi or Hinglish, may have typos) into filters for an India fresher job board. roles: ids from the allowed list that match the intent. cities: canonical names from the allowed list. keywords: 0-3 concrete skills or tools to full-text search, in English, lowercase; never include role or city words. Leave a field empty when the query does not say.` }] },

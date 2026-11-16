@@ -1,7 +1,7 @@
 import { CITIES, EMPLOYMENTS, MODES, ROLES, ROLE_IDS, VERDICTS } from "../../lib/taxonomy.ts";
 import { sha1 } from "../util.ts";
 
-export const MODEL = process.env.BEEP_MODEL || "gemini-3.5-flash-lite";
+export const MODEL = process.env.BEEP_JOBS_MODEL || "gemini-3.5-flash-lite";
 // List price, USD per 1M tokens, Standard tier. Source: https://aistudio.google.com/docs/pricing (read 2026-11-16).
 // Output price includes thinking tokens. Batch API would halve both numbers.
 export const PRICE = { in_per_m: 0.3, out_per_m: 2.5, as_of: "2026-11-16", source: "https://aistudio.google.com/docs/pricing" };
@@ -12,9 +12,12 @@ For every post return one object. Use ONLY the post text. Never use outside know
 ROLE - what the person does day to day, not the company's industry. Pick exactly one id:
 ${ROLES.map((r) => `- ${r.id}: ${r.hint}`).join("\n")}
 Tie-breaks, decide by the duties and not by a word in the title:
-- data_ai is only for people who BUILD or RESEARCH models. Gig work that produces or checks AI training data (annotation, labelling, rating answers, recording speech, validating translations, evaluating model outputs as a subject expert) is operations.
+- data_ai is only for people who BUILD or RESEARCH models. Freelance or gig work that produces or checks AI training data (annotation, labelling, rating answers, recording speech, transcription, validating translations, evaluating model outputs as a subject expert) is operations.
+- Interpreting, translating for clients, acting, teaching, tutoring, and front-line healthcare or hotel service jobs are other. Finding deals or partners for a hotel or hospitality business is sales.
 - An engineer whose duties are ML/GenAI is data_ai even if the title is just "Engineer". Data Engineer is data_analytics. Generic "Engineer"/"SDE"/"Developer" is software.
-- Talking to leads or customers to sell something (also loans, courses, hotel deals, partnerships) is sales, whatever the product. finance is for people who do accounting, audit, treasury, risk or investing.
+- Talking to leads or customers to sell something (also loans, courses, hotel deals, partnerships) is sales, whatever the product. Calling customers to collect dues or verify details is operations. Answering customer questions is support.
+- finance is for accounting, audit, tax, treasury, risk, credit, investing, trading and trade support, even at a technology company.
+- Web, graphic, UI or visual design is design, even when the title says "web". Writing the code for a website is software.
 - Solution consultant, value engineer, implementation or ERP functional consultant: consulting if they advise and configure, software if they mainly write code, sales if they carry a quota.
 - Program, project or delivery management is product. Fixing access issues and running internal tools or IT systems is devops.
 - A "Business Analyst" who mostly writes SQL/dashboards is data_analytics, otherwise consulting. "Technical Support Engineer" is support.
@@ -32,7 +35,8 @@ VERDICT - is this really a fresher job? Based on the MINIMUM experience the post
 - early: minimum experience is more than 0 and at most 2 years ("1+ years", "1-3 years", "2 years").
 - experienced: minimum experience is more than 2 years ("3+ years", "4-6 years"), whatever the title says.
 - unclear: the post states no experience requirement and gives no fresher signal.
-min_exp_years: the minimum years required as a number (0 for fresher signals), or null when not stated.
+min_exp_years: the LOWEST number of years the post requires, as a number. "2+ years" -> 2, "2-4 years" -> 2, "6 months" -> 0.5, fresher signals -> 0. null when not stated.
+The verdict follows from min_exp_years: 0 -> fresher, more than 0 up to and including 2 -> early, more than 2 -> experienced.
 
 RECEIPTS - for role, cities and verdict give a quote that proves your answer.
 - Each quote must be copied VERBATIM, character for character, from the post (TITLE, LOCATION or DESCRIPTION). 3 to 15 words. Do not paraphrase, do not fix typos, do not join distant fragments.

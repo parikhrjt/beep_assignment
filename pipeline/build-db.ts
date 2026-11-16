@@ -1,4 +1,4 @@
-// posts.jsonl (git, source of truth) -> data/beep.db (SQLite + FTS5, read-only query engine baked into each deploy).
+// posts.jsonl (git, source of truth) -> data/beep-jobs.db (SQLite + FTS5, read-only query engine baked into each deploy).
 import { existsSync, readFileSync, rmSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
@@ -6,7 +6,7 @@ import { ROLE_LABEL } from "../lib/taxonomy.ts";
 import type { Post } from "./types.ts";
 
 const src = new URL("../data/posts.jsonl", import.meta.url);
-const out = fileURLToPath(new URL("../data/beep.db", import.meta.url));
+const out = fileURLToPath(new URL("../data/beep-jobs.db", import.meta.url));
 const posts: Post[] = existsSync(src) ? readFileSync(src, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)) : [];
 const jsonl = (name: string) => { const u = new URL(`../data/${name}`, import.meta.url); return existsSync(u) ? readFileSync(u, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)) : []; };
 const json = (name: string) => { const u = new URL(`../data/${name}`, import.meta.url); return existsSync(u) ? JSON.parse(readFileSync(u, "utf8")) : null; };
@@ -45,4 +45,4 @@ meta.run("runs", JSON.stringify(runs.slice(-30)));
 meta.run("eval", JSON.stringify({ holdout: json("eval-holdout.json"), dev: json("eval-dev.json") }));
 db.exec("COMMIT; INSERT INTO fts(fts) VALUES('optimize'); VACUUM;");
 db.close();
-console.log(`beep.db built: ${posts.length} posts (${posts.filter((p) => p.tags.verdict !== "experienced").length} live)`);
+console.log(`beep-jobs.db built: ${posts.length} posts (${posts.filter((p) => p.tags.verdict !== "experienced").length} live)`);

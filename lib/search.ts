@@ -75,10 +75,14 @@ export async function search(f: Filters): Promise<SearchResult> {
   const relaxed: string[] = [];
   if (r.total === 0 && u.terms.length > 1) { const r2 = run(f, u, "OR"); if (r2.total) { r = r2; relaxed.push("matching any keyword"); } }
   const steps: [string, (x: Understood) => Understood][] = [
-    ["keywords", (x) => ({ ...x, terms: [] })],
-    ["fresher-only", (x) => ({ ...x, verdict: undefined })],
-    ["job type", (x) => ({ ...x, employment: undefined })],
-    ["work mode", (x) => ({ ...x, mode: undefined })],
+    ["without keywords", (x) => ({ ...x, terms: [] })],
+    ["without the fresher-only filter", (x) => ({ ...x, verdict: undefined })],
+    ["without the job type", (x) => ({ ...x, employment: undefined })],
+    ["without the work mode", (x) => ({ ...x, mode: undefined })],
+    // Most fresher jobs open to India are remote. A city with no match for this role still has remote ones.
+    ["with remote jobs instead of your city", (x) => (x.cities.length && !x.cities.includes("Remote") ? { ...x, cities: ["Remote"] } : x)],
+    ["without the city filter", (x) => ({ ...x, cities: [] })],
+    ["without the role filter", (x) => ({ ...x, roles: [] })],
   ];
   let cur = u;
   for (const [label, fn] of steps) {
@@ -87,7 +91,7 @@ export async function search(f: Filters): Promise<SearchResult> {
     if (JSON.stringify(nx) === JSON.stringify(cur)) continue;
     cur = nx;
     const r2 = run(f, cur, "AND");
-    relaxed.push(`without ${label}`);
+    relaxed.push(label);
     if (r2.total) r = r2;
   }
   if (!r.total) relaxed.length = 0;

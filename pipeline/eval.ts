@@ -59,4 +59,4 @@ console.log(`\nSET ${SET}  MODEL ${MODEL}  PROMPT ${PROMPT_V}\n  role strict   $
 console.log(`RULES BASELINE\n  role lenient  ${pct(report.rules_baseline.role_lenient)}\n  city          ${pct(report.rules_baseline.city)}`);
 console.log(`COST $${report.cost.usd} for ${golden.length} posts = $${report.cost.per_1k_posts_usd} per 1,000`);
 for (const it of report.items) if (!it.ok.role || !it.ok.city || it.ok.verdict === false) console.log(`MISS ${it.id} "${it.title}" gold=${JSON.stringify(it.gold)} pred=${JSON.stringify(it.pred)}`);
-if (SET === "holdout" && process.env.BEEP_EVAL_GATE !== "off" && (report.llm.role_lenient.acc! < GATE.role_lenient || report.llm.city.acc! < GATE.city)) { console.error("EVAL GATE FAILED"); process.exit(1); }
+if (SET === "holdout" && process.env.BEEP_JOBS_EVAL_GATE !== "off" && (report.llm.role_lenient.acc! < GATE.role_lenient || report.llm.city.acc! < GATE.city)) { console.error("EVAL GATE FAILED"); process.exit(1); }

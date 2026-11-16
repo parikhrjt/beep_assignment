@@ -16,7 +16,7 @@ export function Receipt({ p, compact = false }: { p: Pick<Hit, "id" | "title" | 
     <div className="receipt" role="figure" aria-label={`Tag receipt for ${p.title}`}>
       {!compact && (
         <>
-          <div className="r-row" style={{ fontSize: 10.5, letterSpacing: "0.14em" }}><span>BEEP · TAG RECEIPT</span><span>#{p.id.slice(0, 8).toUpperCase()}</span></div>
+          <div className="r-row" style={{ fontSize: 10.5, letterSpacing: "0.14em" }}><span>BEEP-JOBS · TAG RECEIPT</span><span>#{p.id.slice(0, 8).toUpperCase()}</span></div>
           <hr className="rule" />
         </>
       )}

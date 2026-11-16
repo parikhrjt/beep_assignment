@@ -10,7 +10,7 @@ export function agentMarkdown(s: Stats, origin = "https://beep-jobs.vercel.app")
   const ev = h?.llm;
   const runCost = s.priced?.llm.cost_per_1k_usd ?? h?.cost.per_1k_posts_usd ?? null;
   return `---
-name: beep-fresher-jobs
+name: beep-jobs
 description: Search live fresher (0-2 years) jobs and internships in India. Every role, city and fresher tag carries a verbatim quote from the original post as proof. Use when a user asks for entry-level jobs, internships, or "fresher" roles in an Indian city or remote-India.
 version: prompt ${s.last?.llm.prompt_v ?? "?"} · model ${s.last?.llm.model ?? "?"}
 data_as_of: ${s.last?.at ?? "unknown"}
@@ -18,9 +18,9 @@ refresh: daily, 02:30 UTC (08:00 IST), automatic
 license_note: job data comes from public posting APIs; apply links are passed through unchanged; attribute Himalayas for posts with source=himalayas
 ---
 
-# Beep: fresher jobs in India, with receipts
+# beep-jobs: fresher jobs in India, with receipts
 
-> Other job boards ask you to trust their AI. Beep shows its work.
+> Other job boards ask you to trust their AI. beep-jobs shows its work.
 > Every tag ships with a quote copied from the post, and code checks that the quote is really in the post. No quote, no tag.
 
 ## When to use this skill
@@ -29,19 +29,19 @@ license_note: job data comes from public posting APIs; apply links are passed th
 - The user asks "is this job really for freshers?". Use the \`verdict\` field and quote \`receipts.exp.quote\`.
 
 ## When NOT to use it
-- Senior roles, roles outside India, or salary benchmarking. Beep does not cover them.
+- Senior roles, roles outside India, or salary benchmarking. beep-jobs does not cover them.
 
 ## Live numbers (this build)
 | metric | value |
 |---|---|
 | live fresher posts | ${s.live} |
-| fake-fresher posts caught and hidden (ask for 2+ years) | ${s.rejected} |
+| fake-fresher posts caught and hidden (ask for more than 2 years) | ${s.rejected} |
 | posts with all receipts verified verbatim | ${s.verified} of ${s.total} |
 | companies | ${s.companies} |
 | raw posts scanned in last run | ${s.fetched} |
 | sources | Greenhouse, Lever, Ashby, SmartRecruiters (public job-board APIs) + Himalayas public API |
 
-## Measured quality (hand-labelled ${h?.set ?? "?"} set, n=${h?.n ?? "?"})
+## Measured quality (blind-labelled ${h?.set ?? "?"} set, n=${h?.n ?? "?"}, labelling rules in docs/LABELING.md)
 | field | accuracy | 95% CI |
 |---|---|---|
 | role (exact) | ${p(ev?.role_strict.acc)} | ${ev ? `${p(ev.role_strict.ci95[0])}-${p(ev.role_strict.ci95[1])}` : ""} |
@@ -109,7 +109,7 @@ ${VERDICTS.map((v) => `- \`${v}\`: ${VERDICT_LABEL[v]}`).join("\n")}
 ## Rules for agents
 1. Always give the user \`apply_url\` exactly as returned.
 2. When you claim a job is for freshers, quote \`receipts.exp.quote\`. If \`trust\` is "review", say the tag is unverified.
-3. Do not present \`verdict: "experienced"\` posts as fresher jobs. Beep hides them by default for that reason.
+3. Do not present \`verdict: "experienced"\` posts as fresher jobs. beep-jobs hides them by default for that reason.
 4. For posts with \`source: "himalayas"\`, credit Himalayas (himalayas.app) as the source.
 5. Data is at most ~24 h old. Check \`/api/health\` when freshness matters.
 
@@ -120,6 +120,6 @@ Every day a GitHub Actions cron pulls ~${Math.round(s.fetched / 100) * 100} post
 - Human site: ${origin}
 - Search UI: ${origin}/jobs
 - Evals (every labelled post, every miss): ${origin}/evals
-- Source code: https://github.com/vinitpatil519/beep
+- Source code: https://github.com/vinitpatil519/beep-jobs
 `;
 }

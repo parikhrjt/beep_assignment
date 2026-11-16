@@ -43,6 +43,10 @@ export function getStats() {
     sources: q<{ k: string; n: number }>("SELECT source k, count(*) n FROM posts WHERE live = 1 GROUP BY 1 ORDER BY 2 DESC"),
     names: q<{ company: string }>("SELECT company, count(*) n FROM posts WHERE live = 1 AND source != 'himalayas' GROUP BY 1 ORDER BY n DESC LIMIT 28").map((r) => r.company),
     sample: q<any>("SELECT * FROM posts WHERE live = 1 AND trust = 'verified' AND verdict = 'fresher' AND source != 'himalayas' AND length(title) < 44 AND json_array_length(cities) = 1 ORDER BY length(json_extract(receipts,'$.exp.quote')) DESC LIMIT 1").map(parse)[0] ?? null,
+    // Newest true-fresher posts with every quote verified, one per company, for the landing page.
+    latest: q<any>("SELECT * FROM posts WHERE live = 1 AND verdict = 'fresher' AND trust = 'verified' AND length(title) < 70 ORDER BY posted_at DESC LIMIT 200").map(parse)
+      .filter((p) => /fresher|intern|graduat|student|batch|0\s*(-|–|to)\s*[12]|no (prior )?experience|not required|entry[- ]level/i.test(p.receipts.exp.quote ?? ""))
+      .filter((p, i, a) => a.findIndex((x) => x.company === p.company) === i).slice(0, 6),
     caught: q<any>("SELECT * FROM posts WHERE live = 0 AND source = 'himalayas' AND trust = 'verified' AND min_exp >= 3 AND length(title) < 48 AND length(json_extract(receipts,'$.exp.quote')) BETWEEN 18 AND 90 ORDER BY min_exp DESC, id LIMIT 4").map(parse),
     last, runs, priced, eval: ev,
     built_at: meta<string>("built_at"),

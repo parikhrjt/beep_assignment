@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-export const UA = "BeepJobsBot/1.0 (+https://github.com/vinitpatil519/beep; polite; daily)";
+export const UA = "BeepJobsBot/1.0 (+https://github.com/vinitpatil519/beep-jobs; polite; daily)";
 export const sha1 = (s: string) => createHash("sha1").update(s).digest("hex");
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

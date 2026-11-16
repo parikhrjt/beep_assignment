@@ -5,7 +5,7 @@ import path from "node:path";
 // no network hop, no connection pool and no cold DB to wake: the "database" scales with the functions.
 let _db: DatabaseSync | null = null;
 export function db(): DatabaseSync {
-  if (!_db) _db = new DatabaseSync(path.join(process.cwd(), "data", "beep.db"), { readOnly: true });
+  if (!_db) _db = new DatabaseSync(path.join(process.cwd(), "data", "beep-jobs.db"), { readOnly: true });
   return _db;
 }
 export const meta = <T = any>(k: string): T | null => {

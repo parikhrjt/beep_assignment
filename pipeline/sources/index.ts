@@ -100,9 +100,14 @@ async function himalayas(stat: SourceStat): Promise<RawPost[]> {
 /** Cheap pre-LLM gate: does this post look like it could be for a fresher? High recall on purpose; the LLM gives the real verdict. */
 const TITLE_FRESH = /\b(intern|internship|trainee|graduate|fresher|freshers|new grad|entry[- ]level|apprentice|junior|jr\.?|associate|campus|university|early career|early talent|sde[- ]?1|sde i|engineer i|analyst i|level 1|grad)\b/i;
 const TITLE_SENIOR = /\b(senior|sr\.?|staff|principal|lead|manager|director|head|vp|architect|president|ii|iii|iv|2|3|4)\b/i;
-const TEXT_FRESH = /\b(fresher|freshers|fresh graduate|recent graduate|new graduate|0\s*(-|–|to)\s*[12]\s*(years|yrs|year)|final[- ]year student|currently pursuing|202[5-8] (batch|graduat|pass)|batch of 202[5-8]|graduating in 202[5-8]|no prior experience)/i;
+const TEXT_FRESH = /\b(fresher|freshers|fresh graduate|recent graduate|new graduate|final[- ]year student|currently pursuing|202[5-8] (batch|graduat|pass)|batch of 202[5-8]|graduating in 202[5-8]|no prior experience)/i;
+// The board covers 0 to 2 years, so a stated minimum of 0, 1 or 2 years makes a post worth reading ("1-3 years", "2+ years of experience").
+const TEXT_YEARS = /(?<![\d.])[0-2]\s*(\+|plus)?\s*((-|–|—|to)\s*\d{1,2}\s*\+?\s*)?(years?|yrs?)\b[^.\n]{0,40}\bexperience|\bexperience\b[^.\n]{0,20}\b[0-2]\s*((-|–|—|to)\s*\d{1,2}\s*)?(years?|yrs?)\b/i;
+const HINT_FRESH = /\b(entry|intern|graduate|student|apprentice|trainee)/i; // SmartRecruiters' own experienceLevel / type labels
 const TITLE_BOSS = /\b(senior|sr\.?|staff|principal|lead|manager|director|head|vp|architect|president)\b/i; // "Associate Director" is not a fresher job
-export const looksFresher = (p: RawPost) => (TITLE_FRESH.test(p.title) && !TITLE_BOSS.test(p.title)) || (!TITLE_SENIOR.test(p.title) && TEXT_FRESH.test(p.text.slice(0, 4000)));
+export const looksFresher = (p: RawPost) =>
+  (TITLE_FRESH.test(p.title) && !TITLE_BOSS.test(p.title)) ||
+  (!TITLE_SENIOR.test(p.title) && (TEXT_FRESH.test(p.text.slice(0, 8000)) || TEXT_YEARS.test(p.text.slice(0, 8000)) || HINT_FRESH.test(p.employment_hint ?? "")));
 
 export async function collect(): Promise<{ posts: RawPost[]; stats: Record<string, SourceStat>; failedSources: Set<string> }> {
   const stats: Record<string, SourceStat> = {};

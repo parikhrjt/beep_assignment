@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const config: NextConfig = {
   // Ship the SQLite file inside every server function that might open it.
-  outputFileTracingIncludes: { "/**": ["./data/beep.db"] },
+  outputFileTracingIncludes: { "/**": ["./data/beep-jobs.db"] },
   poweredByHeader: false,
   async headers() {
     return [{ source: "/(.*)", headers: [

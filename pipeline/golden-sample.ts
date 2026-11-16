@@ -1,4 +1,4 @@
-// Draw the 50-post golden sample. Seeded + stratified so it is reproducible and not dominated by one source.
+// Draw a golden sample. Seeded + stratified so it is reproducible and not dominated by one source.
 // Writes data/golden.todo.jsonl WITHOUT model predictions: labels must be made blind.
 import { readFileSync, writeFileSync } from "node:fs";
 import { sha1 } from "./util.ts";
@@ -8,7 +8,9 @@ const ps = readFileSync(new URL("../data/posts.jsonl", import.meta.url), "utf8")
 const rank = (p: any) => sha1(SEED + p.id);
 const pick = (xs: any[], n: number) => xs.sort((a, b) => rank(a).localeCompare(rank(b))).slice(0, n);
 const ats = ps.filter((p) => p.source !== "himalayas"), agg = ps.filter((p) => p.source === "himalayas");
-const sample = [...pick(ats, 25), ...pick(agg, 25)];
+// Half first-party ATS, half aggregator, so neither source dominates the score. GOLDEN_N sets the size (default 50).
+const N = Number(process.env.GOLDEN_N || 50);
+const sample = [...pick(ats, N / 2), ...pick(agg, N / 2)];
 writeFileSync(new URL("../data/golden.todo.jsonl", import.meta.url), sample.map((p) => JSON.stringify({ id: p.id, source: p.source, title: p.title, company: p.company, location_raw: p.location_raw, text: p.text })).join("\n") + "\n");
 const SIG = /\b(\d+\s*\+?\s*(-|–|to)?\s*\d*\s*\+?\s*(years?|yrs?)|fresher|graduat|experience|intern|batch|pursuing)\b/i;
 sample.forEach((p, i) => {

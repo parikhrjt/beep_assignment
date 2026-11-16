@@ -1,14 +1,15 @@
 import Link from "next/link";
 
 export function Nav({ active, toggle }: { active?: "home" | "jobs" | "evals"; toggle?: React.ReactNode }) {
+  const cur = (k: string) => (active === k ? "page" : undefined);
   return (
     <header className="nav">
       <div className="wrap nav-in">
-        <Link href="/" className="logo" aria-label="Beep home">beep<i /></Link>
+        <Link href="/" className="logo" aria-label="beep-jobs home">beep<span>-</span>jobs</Link>
         <nav className="nav-links">
-          <Link href="/jobs" style={active === "jobs" ? { color: "var(--ink)" } : undefined}>Jobs</Link>
-          <Link href="/evals" style={active === "evals" ? { color: "var(--ink)" } : undefined}>Evals</Link>
-          <a className="hide-m" href="https://github.com/vinitpatil519/beep" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <Link href="/jobs" aria-current={cur("jobs")}>Jobs</Link>
+          <Link href="/evals" aria-current={cur("evals")}>Accuracy</Link>
+          <a className="hide-m" href="https://github.com/vinitpatil519/beep-jobs" target="_blank" rel="noopener noreferrer">Code</a>
           {toggle}
         </nav>
       </div>

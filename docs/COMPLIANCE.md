@@ -1,8 +1,8 @@
 # Source compliance
 
-Beep only reads data that publishers expose **on purpose, through documented public APIs**. It does not scrape HTML, log in, bypass rate limits or read pages that a site's `robots.txt` disallows.
+beep-jobs only reads data that publishers expose **on purpose, through documented public APIs**. It does not scrape HTML, log in, bypass rate limits or read pages that a site's `robots.txt` disallows.
 
-| Source | Endpoint | Why it is allowed | What Beep does to respect it |
+| Source | Endpoint | Why it is allowed | What beep-jobs does to respect it |
 |---|---|---|---|
 | Greenhouse Job Board API | `boards-api.greenhouse.io/v1/boards/{board}/jobs?content=true` | Greenhouse docs: "Job Board data is publicly available, so authentication is not required for any GET endpoints." | GET only. One request per board per day. Apply links point to the company's own Greenhouse page. |
 | Lever Postings API | `api.lever.co/v0/postings/{company}?mode=json` | Lever docs: "all job postings in the `published` state are publicly viewable." | GET only, one request per company per day. No application POSTs. |
@@ -20,7 +20,7 @@ Beep only reads data that publishers expose **on purpose, through documented pub
 
 ## Identification
 
-Every request sends `User-Agent: BeepJobsBot/1.0 (+https://github.com/vinitpatil519/beep; polite; daily)` so publishers can identify and contact the operator.
+Every request sends `User-Agent: BeepJobsBot/1.0 (+https://github.com/vinitpatil519/beep-jobs; polite; daily)` so publishers can identify and contact the operator.
 
 ## Data handling
 

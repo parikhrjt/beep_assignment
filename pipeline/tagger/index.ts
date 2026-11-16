@@ -28,22 +28,69 @@ export function rulesTag(p: TagInput): Tags {
   };
 }
 
+const PSEUDO = ["Remote", "Pan-India", "Other"];
+const real = (xs: string[]) => xs.filter((c) => !PSEUDO.includes(c));
+const NUM_WORDS: Record<string, string> = { zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7", eight: "8", ten: "10" };
+
+/**
+ * Minimum years of experience stated in a verified quote, or null when the quote does not state one.
+ * "2-4 years of experience" -> 2, "at least 0-2 years experience" -> 0, "6 months of experience" -> 0.5.
+ * Only reads quotes about experience, so "graduated within 2 years" is never mistaken for a requirement.
+ */
+export function minYears(quote: string): number | null {
+  const s = quote.toLowerCase().replace(/\b(zero|one|two|three|four|five|six|seven|eight|ten)\b/g, (w) => NUM_WORDS[w]);
+  if (!/experien|\bexp\b/.test(s) || /graduat|batch|years? old|of age/.test(s)) return null;
+  // "Freshers - 4-5 years" is a range that starts at zero.
+  if (/\bfreshers?\b|no (prior )?experience/.test(s)) return 0;
+  const m = s.match(/(\d+(?:\.\d+)?)\s*\+?\s*(?:(?:-|–|—|to)\s*\d+(?:\.\d+)?\s*\+?\s*)?(years?|yrs?|months?)/);
+  if (!m) return null;
+  const v = Number(m[1]);
+  return /^m/.test(m[2]) ? +(v / 12).toFixed(2) : v;
+}
+
+/** The written verdict policy, applied in code so it never depends on how the model reads "2+ years". */
+export function verdictFor(min: number, employment: string): Verdict {
+  if (min > 2) return "experienced";
+  if (min === 0 || employment === "internship" || employment === "apprenticeship") return "fresher";
+  return "early";
+}
+
 /** The receipt check. A quote counts only if it is a verbatim substring of what the model was shown. */
 export function verify(p: TagInput, t: Tags): Tags {
-  // Policy normalisation (deterministic, so it never depends on the model's mood): "Pan-India" means "no city known", so it never sits next to a city or Remote.
-  if (t.cities.length > 1) t.cities = t.cities.filter((c) => c !== "Pan-India");
   const hay = canon(`${p.title}\n${p.location_raw}\n${p.text}`);
   // The model sometimes copies our own field label ("LOCATION: ...") into the quote; the label is not part of the post.
   const has = (q: string) => { const c = canon(q).replace(/^(title|location|description|company)\s*:\s*/, "").replace(/^[.…\s]+|[.…\s]+$/g, ""); return c.length >= 3 && hay.includes(c); };
   t.receipts.role.ok = has(t.receipts.role.quote);
   t.receipts.city.ok = has(t.receipts.city.quote);
   t.receipts.exp.ok = t.verdict === "unclear" ? true : has(t.receipts.exp.quote);
-  // Second, independent signal: the gazetteer reads the structured location field. Agreement raises trust for free.
-  const real = (xs: string[]) => xs.filter((c) => !["Remote", "Pan-India", "Other"].includes(c));
+
+  // Second, independent signal: the gazetteer reads the structured location field. Trust is judged on what the model said.
   const gLoc = real(gazetteer(p.location_raw));
   const gAll = new Set(real(gazetteer(`${p.location_raw}\n${p.text}`)));
   const llm = real(t.cities);
   const agree = gLoc.every((c) => llm.includes(c)) && llm.every((c) => gAll.has(c));
+
+  // City grounding: a named city must appear in the location field or in the verified city quote.
+  // This removes cities the model infers from a company's head office when the job itself is remote.
+  const support = new Set(real(gazetteer(`${p.location_raw}\n${t.receipts.city.ok ? t.receipts.city.quote : ""}`)));
+  let cities = t.cities.filter((c) => PSEUDO.includes(c) || support.has(c));
+  for (const c of gLoc) if (!cities.includes(c)) cities.push(c);
+  // "Other" means an Indian place outside our list. When the location field already names a listed city, it is noise ("Bengaluru; Payments").
+  if (gLoc.length) cities = cities.filter((c) => c !== "Other");
+  // "Pan-India" means "no city known", so it never sits next to a city or Remote.
+  if (cities.length > 1) cities = cities.filter((c) => c !== "Pan-India");
+  if (!cities.length) cities = /remote|work from home/i.test(p.location_raw) ? ["Remote"] : ["Pan-India"];
+  t.cities = cities;
+
+  // Verdict: the model extracts the number, code applies the policy. A verified quote that states years wins over the model's own number.
+  const quoted = t.receipts.exp.ok ? minYears(t.receipts.exp.quote) : null;
+  const min = quoted ?? t.min_exp_years;
+  if (min != null && min >= 0 && min < 30) { t.min_exp_years = min; t.verdict = verdictFor(min, t.employment); }
+
+  // A title that names a student programme is itself the fresher signal when the body states no requirement.
+  const prog = t.verdict === "unclear" ? p.title.match(/\b(intern(ship)?|trainee|apprentice(ship)?|campus [a-z]+|student [a-z]+|new grad(uate)?|graduate (program(me)?|trainee))\b/i) : null;
+  if (prog) { t.verdict = "fresher"; t.min_exp_years = 0; t.receipts.exp = { quote: prog[0], ok: true }; }
+
   t.trust = t.receipts.role.ok && t.receipts.city.ok && t.receipts.exp.ok && agree && t.cities.length > 0 ? "verified" : "review";
   return t;
 }
