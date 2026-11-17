@@ -7,22 +7,25 @@ export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 /** GET JSON with timeout, retries, exponential backoff + jitter, and Retry-After support. */
 export async function getJSON<T = any>(url: string, opts: { retries?: number; timeoutMs?: number } = {}): Promise<T | null> {
   const { retries = 3, timeoutMs = 25_000 } = opts;
+  let cause = "";
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const r = await fetch(url, { headers: { "user-agent": UA, accept: "application/json" }, signal: AbortSignal.timeout(timeoutMs) });
       if (r.status === 404 || r.status === 410) return null; // board gone: not an error worth retrying
       if (r.status === 429 || r.status >= 500) {
+        cause = `HTTP ${r.status}`;
         const ra = Number(r.headers.get("retry-after"));
         await sleep(Number.isFinite(ra) && ra > 0 ? Math.min(ra, 60) * 1000 : 2 ** attempt * 800 + Math.random() * 400);
         continue;
       }
       if (!r.ok) return null;
       return (await r.json()) as T;
-    } catch {
+    } catch (e) {
+      cause = (e as Error)?.message || String(e);
       await sleep(2 ** attempt * 800 + Math.random() * 400);
     }
   }
-  throw new Error(`GET failed after retries: ${url}`);
+  throw new Error(`GET failed after retries (${cause}): ${url}`);
 }
 
 /** Bounded-concurrency map. Keeps us polite to upstream APIs. */

@@ -22,7 +22,7 @@ async function main() {
   log(`previous snapshot: ${prev.size} posts`);
 
   const { posts: raw, stats, failedSources } = await collect();
-  for (const [s, st] of Object.entries(stats)) log(`source ${s}: boards=${st.boards} fetched=${st.fetched} india=${st.india} candidates=${st.candidates} errors=${st.errors}`);
+  for (const [s, st] of Object.entries(stats)) log(`source ${s}: boards=${st.boards} fetched=${st.fetched} india=${st.india} candidates=${st.candidates} errors=${st.errors}${st.first_error ? ` first_error="${st.first_error}"` : ""}`);
 
   const { clusters, removed } = dedupe(raw);
   const dupTotal = removed.exact + removed.fingerprint + removed.near;

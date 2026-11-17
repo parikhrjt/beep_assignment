@@ -117,7 +117,7 @@ export async function collect(): Promise<{ posts: RawPost[]; stats: Record<strin
     const st: SourceStat = (stats[ats] = { boards: boards.length, fetched: 0, india: 0, candidates: 0, errors: 0 });
     // Each board is isolated: one dead board never fails the run.
     const res = await pool(boards, 6, async (b) => {
-      try { return (await ADAPTERS[ats](b)) ?? []; } catch { st.errors++; return []; }
+      try { return (await ADAPTERS[ats](b)) ?? []; } catch (e) { st.errors++; st.first_error ??= String((e as Error)?.message ?? e).slice(0, 200); return []; }
     });
     for (const p of res.flat()) {
       st.fetched++;
@@ -134,6 +134,6 @@ export async function collect(): Promise<{ posts: RawPost[]; stats: Record<strin
     const h = await himalayas(hs);
     hs.candidates = h.length;
     posts.push(...h);
-  } catch { hs.errors++; failedSources.add("himalayas"); }
+  } catch (e) { hs.errors++; hs.first_error = String((e as Error)?.message ?? e).slice(0, 200); failedSources.add("himalayas"); }
   return { posts, stats, failedSources };
 }

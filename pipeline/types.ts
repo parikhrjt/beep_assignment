@@ -54,7 +54,7 @@ export type Post = {
   tags: Tags;
 };
 
-export type SourceStat = { boards: number; fetched: number; india: number; candidates: number; errors: number };
+export type SourceStat = { boards: number; fetched: number; india: number; candidates: number; errors: number; first_error?: string };
 
 export type RunLedger = {
   run_id: string;
