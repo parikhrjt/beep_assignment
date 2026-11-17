@@ -37,6 +37,8 @@ One honest caveat: on **city**, the plain rules (a gazetteer over the location f
 - 2 cities named only in the description (training in New Delhi, an Ahmedabad office) that the grounding rule removed.
 - 2 roles: an SAP topic page with no real duties, and an open "Discipline Undecided" engineering-design track tagged as software.
 
+**Run-to-run noise.** The CI eval gate re-ran the same held-out set with the same prompt on 2026-11-17 and scored role 98%, city 97%, role and city 95%, verdict 95% (79/83), cost $0.57 per 1,000. Gemini at temperature 0 is not bit-exact, so treat about ±2 points as noise. The headline numbers above are from the first run, not the better one.
+
 ### What changed between v1 and v2 of the tagger
 
 | | v1 (`20f64852`) | v2 (`04ee401a`) |
