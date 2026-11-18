@@ -104,7 +104,7 @@ export default function Evals() {
             )}
             <div>
               <h2>Who labelled</h2>
-              <p>{main?.labeled_by ?? "n/a"}, reading each post without seeing the model&rsquo;s answer, following the written guide in <a className="link" href="https://github.com/vinitpatil519/beep-jobs/blob/main/docs/LABELING.md">LABELING.md</a>. {main?.human_verified ? `${main.human_verified} labels were checked by a person.` : "No person has checked the labels yet."}</p>
+              <p>{main?.labeled_by ?? "n/a"}, reading each post without seeing the model&rsquo;s answer, following the written guide in <a className="link" href="https://github.com/parikhrjt/beep_assignment/blob/main/docs/LABELING.md">LABELING.md</a>. {main?.human_verified ? `${main.human_verified} labels were checked by a person.` : "No person has checked the labels yet."}</p>
               <p>Some posts fit two roles (is a collections telecaller in sales or operations?), so there is a one-label score and a score that also accepts a second label written down before scoring.</p>
             </div>
           </div>

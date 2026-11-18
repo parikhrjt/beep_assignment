@@ -120,6 +120,6 @@ Every day a GitHub Actions cron pulls ~${Math.round(s.fetched / 100) * 100} post
 - Human site: ${origin}
 - Search UI: ${origin}/jobs
 - Evals (every labelled post, every miss): ${origin}/evals
-- Source code: https://github.com/vinitpatil519/beep-jobs
+- Source code: https://github.com/parikhrjt/beep_assignment
 `;
 }

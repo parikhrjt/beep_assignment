@@ -9,7 +9,7 @@ export function Nav({ active, toggle }: { active?: "home" | "jobs" | "evals"; to
         <nav className="nav-links">
           <Link href="/jobs" aria-current={cur("jobs")}>Jobs</Link>
           <Link href="/evals" aria-current={cur("evals")}>Accuracy</Link>
-          <a className="hide-m" href="https://github.com/vinitpatil519/beep-jobs" target="_blank" rel="noopener noreferrer">Code</a>
+          <a className="hide-m" href="https://github.com/parikhrjt/beep_assignment" target="_blank" rel="noopener noreferrer">Code</a>
           {toggle}
         </nav>
       </div>

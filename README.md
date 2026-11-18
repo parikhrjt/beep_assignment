@@ -1,16 +1,16 @@
 <div align="center">
 
-# beep-jobs
+# beep_assignment: India Fresher Jobs Intelligence
 
-### Fresher jobs in India, tagged by AI, **with receipts.**
+### Real fresher jobs in India, tagged by AI, **with verifiable receipts.**
 
 Every role, city and "fresher" tag comes with a **verbatim quote from the job post** that proves it.
 Plain code checks that the quote is really in the post. **No quote, no tag.**
 
 **[Live site: beep-jobs.vercel.app](https://beep-jobs.vercel.app)** · [Search jobs](https://beep-jobs.vercel.app/jobs) · [Accuracy](https://beep-jobs.vercel.app/evals) · [AI view (`/llms.txt`)](https://beep-jobs.vercel.app/llms.txt)
 
-![refresh](https://github.com/vinitpatil519/beep-jobs/actions/workflows/refresh.yml/badge.svg)
-![ci](https://github.com/vinitpatil519/beep-jobs/actions/workflows/ci.yml/badge.svg)
+![refresh](https://github.com/parikhrjt/beep_assignment/actions/workflows/refresh.yml/badge.svg)
+![ci](https://github.com/parikhrjt/beep_assignment/actions/workflows/ci.yml/badge.svg)
 ![posts](https://img.shields.io/badge/live_posts-746-ff5a1f)
 ![role accuracy](https://img.shields.io/badge/role_accuracy-98%25_held--out-17703e)
 ![city accuracy](https://img.shields.io/badge/city_accuracy-95%25_held--out-17703e)
@@ -362,7 +362,7 @@ The site is a light, plain page for reading job posts, with one loud object: the
 ## Run it yourself
 
 ```bash
-git clone https://github.com/vinitpatil519/beep-jobs && cd beep-jobs
+git clone https://github.com/parikhrjt/beep_assignment.git && cd beep_assignment
 npm ci
 cp .env.example .env              # add GEMINI_API_KEY
 npm run pipeline                  # collect → dedupe → tag → verify → data/posts.jsonl

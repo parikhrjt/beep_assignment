@@ -20,7 +20,7 @@ beep-jobs only reads data that publishers expose **on purpose, through documente
 
 ## Identification
 
-Every request sends `User-Agent: BeepJobsBot/1.0 (+https://github.com/vinitpatil519/beep-jobs; polite; daily)` so publishers can identify and contact the operator.
+Every request sends `User-Agent: BeepJobsBot/1.0 (+https://github.com/parikhrjt/beep_assignment; polite; daily)` so publishers can identify and contact the operator.
 
 ## Data handling
 

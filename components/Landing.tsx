@@ -343,14 +343,14 @@ function Human({ s, examples }: { s: Stats; examples: Example[] }) {
           <h2 className="l-h2 display">{n(s.live)} jobs, checked every morning</h2>
           <div className="l-actions">
             <Link className="btn btn-primary" href="/jobs">Search jobs</Link>
-            <a className="btn btn-ghost" href="https://github.com/vinitpatil519/beep-jobs" target="_blank" rel="noopener noreferrer">Read the code</a>
+            <a className="btn btn-ghost" href="https://github.com/parikhrjt/beep_assignment" target="_blank" rel="noopener noreferrer">Read the code</a>
           </div>
         </div>
       </section>
       <footer className="foot">
         <div className="wrap">
           <span>Jobs come from the public APIs of Greenhouse, Lever, Ashby, SmartRecruiters and <a href="https://himalayas.app" target="_blank" rel="noopener noreferrer">Himalayas</a>. Apply links go to the original post.</span>
-          <span className="foot-links"><a href="/llms.txt">llms.txt</a><a href="/api/health">Status</a><a href="https://github.com/vinitpatil519/beep-jobs" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+          <span className="foot-links"><a href="/llms.txt">llms.txt</a><a href="/api/health">Status</a><a href="https://github.com/parikhrjt/beep_assignment" target="_blank" rel="noopener noreferrer">GitHub</a></span>
         </div>
       </footer>
     </div>

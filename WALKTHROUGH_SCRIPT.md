@@ -1,76 +1,78 @@
-# 5-Minute Video Walkthrough Script (Loom: Face + Screen)
+# 5-Minute Technical Walkthrough Script (Loom: Face + Screen)
 
-**Goal**: Deliver a concise, high-impact demonstration of the live tool, the architecture, the LLM tagging with receipts, the 50-post hand-check evaluation, and the daily refresh pipeline within 5 minutes.
-
----
-
-## Breakdown & Timestamps
-
-```
-[0:00 - 0:45] Intro & Live Product Demo
-[0:45 - 1:45] Public Sources & Ingestion Pipeline
-[1:45 - 2:45] Smart Deduplication & LLM Tagging with Receipts
-[2:45 - 3:45] Hand-Check Evaluation (Accuracy & Cost Analysis)
-[3:45 - 4:45] Automated Daily Refresh & Reliability
-[4:45 - 5:00] Conclusion & Wrap-Up
-```
+**Objective**: Deliver a high-signal, concise technical walkthrough demonstrating the production system, pipeline architecture, extraction accuracy, and unit economics within 5 minutes.
 
 ---
 
-### Segment 1: Intro & Live Product Demo [0:00 - 0:45]
-- **Camera**: Screen share with camera bubble in bottom corner.
-- **Visual**: Show the live homepage at `beep-jobs.vercel.app` (or `localhost:3000`).
+## Timeline & Camera Cues
+
+| Timestamp | Visual Focus | Core Topic |
+|---|---|---|
+| **0:00 – 0:50** | Browser (`localhost:3000` or `beep-jobs.vercel.app`) + Face | Product Overview & Grounded Receipts |
+| **0:50 – 1:45** | VS Code / Architecture Diagram | Public ATS Ingestion & Deduplication Topology |
+| **1:45 – 2:45** | Code (`prompt.ts`, `receipt.ts`) | Structured LLM Extraction & Deterministic Verification |
+| **2:45 – 3:45** | Browser (`/evals`) | Statistical Evaluation & Unit Economics ($0.54 / 1k) |
+| **3:45 – 4:45** | GitHub Actions (`refresh.yml`) | Automated Daily Pipeline & Quality Gates |
+| **4:45 – 5:00** | Camera / Summary | Conclusion & Wrap-Up |
+
+---
+
+### [0:00 – 0:50] 1. Product Overview & Grounded Receipts
+- **Screen**: Main Job Board (`/jobs`).
 - **Talking Points**:
-  > *"Hi Beep team! Today I'm excited to present **beep-jobs**: a live, AI-powered fresher job intelligence platform collecting over 700 verified, active fresher jobs and internships across India.*
-  > *Every role, city, and fresher verdict comes with a **verbatim quote from the job post** that proves it — plain code verifies the quote against the post. If there's no quote, there's no tag.*
-  > *Notice how fast and responsive the UI is: I can filter instantly by city like Bengaluru or Gurugram, drill down into Software or Data roles, toggle between full-time freshers and internships, and inspect the exact quote behind every AI prediction."*
+  > *"Hi Beep engineering team. Today I'm walking through **beep-jobs**, an AI-powered intelligence board tracking over 740 active fresher and internship opportunities across India.*
+  > *Rather than relying on ungrounded model outputs, the platform enforces a core invariant: **'No quote, no tag'**.*
+  > *Every role categorization, canonical city tag, and fresher verdict is accompanied by a verbatim 3-to-15 word excerpt extracted directly from the raw job description.*
+  > *Our UI is built with Next.js and optimized for low-latency client filtering across locations (Bengaluru, Hyderabad, Gurugram, Remote), roles, and experience levels, allowing candidates to immediately inspect the verifiable evidence behind every AI classification."*
 
 ---
 
-### Segment 2: Public Sources & Ingestion Pipeline [0:45 - 1:45]
-- **Visual**: Switch to VS Code or GitHub showing `pipeline/sources/registry.json` and `pipeline/sources/index.ts`.
+### [0:50 – 1:45] 2. Ingestion Architecture & Deduplication Topology
+- **Screen**: `pipeline/sources/registry.json` and `pipeline/dedupe.ts`.
 - **Talking Points**:
-  > *"When collecting 200+ real fresher posts in India, traditional web scraping is brittle and prone to CAPTCHA blocks. Instead, our ingestion engine connects directly to **official, public Applicant Tracking System APIs**: Greenhouse, Lever, Ashby, and SmartRecruiters, across 80+ top Indian tech employers like Razorpay, Meesho, CRED, InMobi, and Thoughtworks, complemented by Hasjob's live Atom feed and Himalayas.*
-  > *This guarantees zero bot-blocking, zero rate limits, and 100% active, legitimate openings."*
+  > *"Collecting real fresher jobs via traditional HTML scrapers causes frequent bot bans and stale data. Instead, our pipeline queries **official, public ATS REST APIs**—specifically Greenhouse, Lever, Ashby, and SmartRecruiters—across 80+ top Indian tech employers like Razorpay, Meesho, CRED, InMobi, and Thoughtworks, combined with live Hasjob Atom feeds.*
+  > *Because jobs in India are heavily cross-posted, we run a three-stage deduplication pipeline:*
+  > *1. Exact URL canonicalization stripping tracking parameters.*
+  > *2. Normalized company-slug plus title fingerprinting.*
+  > *3. 64-bit SimHash text similarity clustering.*
+  > *This merges ~18% cross-posted duplicates into unified clusters while preserving the primary source link."*
 
 ---
 
-### Segment 3: Deduplication & LLM Tagging with Receipts [1:45 - 2:45]
-- **Visual**: Show `pipeline/dedupe.ts` and `pipeline/tagger/prompt.ts`.
+### [1:45 – 2:45] 3. Structured LLM Extraction & Deterministic Verification
+- **Screen**: `pipeline/tagger/prompt.ts` and `core.test.ts`.
 - **Talking Points**:
-  > *"Cross-posting is rampant in India. Our pipeline implements a multi-stage deduplication engine:*
-  > *1. URL canonicalization stripping tracking params.*
-  > *2. Title + Company slug fingerprinting.*
-  > *3. MinHash / SimHash near-duplicate clustering.*
-  > *Out of ~1,000 raw postings, deduplication cleanly merged 18% duplicate listings.*
-  > *For tagging, we use Gemini 3.5 Flash Lite with structured JSON schema enforcement. We don't just ask for a category; we ask the model to extract a 3-to-15 word **verbatim quote** proving the role, city, and experience level. A deterministic code check validates that the quote exists character-for-character in the raw text."*
+  > *"For extraction, we use Gemini 3.5 Flash Lite with strict JSON schema enforcement.*
+  > *The prompt resolves ambiguous corporate roles using explicit operational tie-breakers—for example, distinguishing between data science modeling (`data_ai`) versus AI annotation and RLHF gig work (`operations`).*
+  > *Crucially, we do not trust model output blindly: a deterministic verification layer performs a character-for-character substring check ensuring that every returned receipt quote actually exists in the raw post.*
+  > *If a quote is missing or mutated, the tag is rejected or flagged for review. We have 12 automated unit tests validating everything from city gazetteer normalization to receipt enforcement."*
 
 ---
 
-### Segment 4: Hand-Check Evaluation & Cost Analysis [2:45 - 3:45]
-- **Visual**: Navigate to the live `/evals` page on screen. Show the accuracy cards and the 50 hand-checked post table.
+### [2:45 – 3:45] 4. Evaluation Methodology & Cost Analysis
+- **Screen**: Live `/evals` page.
 - **Talking Points**:
-  > *"To answer the core assignment question: how accurate is our tagging and what does it cost?*
-  > *We hand-checked 50 posts (and expanded to 100 on a held-out test set) labeled **completely blind** before running the model.*
-  > *Here are the exact numbers:*
-  > *- **Role Accuracy**: **98%** (100% on the 50 sample, 98/100 on held-out).*
-  > *- **City Accuracy**: **95%** (100% on the 50 sample, 95/100 on held-out).*
-  > *- **Both Correct**: **93%**.*
-  > *Compare this to our deterministic rules baseline, which scored only **56%** on role tagging. The LLM adds a massive +42% accuracy gain.*
-  > *And on **Cost per 1,000 posts**: using real token counts from production runs, tagging costs **$0.54 per 1,000 posts** (about 45 rupees). Even better, our pipeline uses SHA-1 content hashing, so re-checking an unchanged post costs **$0.00**. A daily refresh typically costs just 2 to 3 cents."*
+  > *"To evaluate accuracy, we established a **held-out test set of 100 posts** (and a 50-post sample) labelled **completely blind** prior to model inference.*
+  > *Our results:*
+  > *- **Role Accuracy**: **98.0%** (Lenient) / **90.0%** (Strict), with a Wilson 95% confidence interval of 93% to 99%.*
+  > *- **City Accuracy**: **95.0%** against our canonical gazetteer.*
+  > *- **Combined Accuracy**: **93.0%** for both labels correct on the same posting.*
+  > *- **Verdict Accuracy**: **96.4%** identifying genuine fresher roles.*
+  > *Crucially, a deterministic rules-only baseline achieves only **56.0%** on role tagging—meaning the LLM delivers an indispensable **+42% accuracy gain**.*
+  > *On **Cost**: telemetry from our production run shows 468 input and 161 output tokens per post. At standard Google list prices, our cost is **$0.54 per 1,000 posts** (about ₹45 INR). With SHA-1 content addressing, unchanged posts cost **$0.00**, keeping daily incremental refresh costs under **$0.03 per day**."*
 
 ---
 
-### Segment 5: Automated Daily Refresh & Reliability [3:45 - 4:45]
-- **Visual**: Show `.github/workflows/refresh.yml` and the GitHub Actions run history.
+### [3:45 – 4:45] 5. Automated Daily Refresh & Quality Gates
+- **Screen**: `.github/workflows/refresh.yml`.
 - **Talking Points**:
-  > *"The board refreshes every single day at 08:00 AM IST via GitHub Actions.*
-  > *The workflow runs unit tests, fetches new jobs, deduplicates, tags new listings with Gemini, verifies receipts, checks the quality gate, commits updated data, and Vercel automatically deploys the latest static build.*
-  > *We have 12 automated unit tests checking everything from city gazetteer normalization to receipt enforcement."*
+  > *"The system is entirely automated. A GitHub Actions workflow triggers daily at 08:00 AM IST.*
+  > *The runner executes our test suite, collects latest postings, deduplicates against existing clusters, tags net-new postings via Gemini, verifies quotes, tests the quality gate, and commits the updated data.*
+  > *Vercel automatically detects the commit and redeploys the updated static search bundle with zero human intervention."*
 
 ---
 
-### Segment 6: Wrap-Up [4:45 - 5:00]
-- **Visual**: Back to camera / clean product interface.
+### [4:45 – 5:00] 6. Summary
+- **Screen**: Camera / GitHub repo.
 - **Talking Points**:
-  > *"In summary: 749 live fresher jobs in India, 98% role accuracy with verified receipts, $0.54 cost per 1,000 posts, and automated daily refreshes. All code, prompts, and evaluation data are open and reproducible in the repository. Thank you!"*
+  > *"To conclude: 749 live fresher jobs, 98% role tagging accuracy with verifiable receipts, $0.54 per 1,000 posts inference cost, and automated daily refreshes. All evaluation datasets, prompts, and code are open and fully reproducible in the repository. Thank you!"*
