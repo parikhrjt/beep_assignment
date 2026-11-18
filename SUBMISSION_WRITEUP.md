@@ -114,3 +114,15 @@ npm run dev
 # App available at http://localhost:3000
 # Evals dashboard at http://localhost:3000/evals
 ```
+
+---
+
+## 5. Production Considerations & Scaling Roadmap
+
+In an enterprise production deployment, the following extensions would be prioritized:
+1. **Automated ATS Discovery Engine**: Crawl Indian venture portfolio sites (Peak XV, Blume, Accel India) to dynamically discover career boards matching `*.greenhouse.io`, `*.lever.co`, and `*.ashbyhq.com`, eliminating static registry curation.
+2. **Workday & Enterprise Adapters**: Integrate legacy enterprise career endpoints to ingest high-volume campus hiring pipelines from TCS, Infosys, Wipro, and Accenture.
+3. **Dead-Link / Expiry Reaper**: Implement automated daily `HEAD` requests across active apply URLs to prune closed listings and prevent ghost jobs.
+4. **Hybrid Semantic Search**: Layer Reciprocal Rank Fusion (BM25 + `sqlite-vec` embeddings) over SQLite to support natural language queries (e.g. *"remote agentic workflows with Python"*).
+5. **Context Caching**: Implement Gemini Prompt Caching over the static taxonomy instructions, reducing baseline prompt token costs by ~75% (<$0.20 per 1,000 posts).
+
