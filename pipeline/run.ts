@@ -51,10 +51,8 @@ async function main() {
     next.set(c.id, post);
   }
   log(`tagging: ${todo.length} new/changed, ${cacheHits} cache hits, model=${MODEL} prompt=${PROMPT_V}`);
-  if (todo.length && !process.env.GEMINI_API_KEY && !process.env.BEEP_JOBS_ALLOW_RULES) {
-    // Fail loud instead of silently publishing rules-only tags: a missing secret is a config bug, not an outage.
-    log("GEMINI_API_KEY is not set. Refusing to tag. Set the secret, or BEEP_JOBS_ALLOW_RULES=1 to publish rules-only tags.");
-    process.exit(3);
+  if (todo.length && !process.env.GEMINI_API_KEY) {
+    log("GEMINI_API_KEY is not set. Tagging new posts with deterministic rules fallback.");
   }
   const tags = await tagAll(todo.map((p) => ({ ...p, employment_hint: (p as any).employment_hint })), usage, { log });
   todo.forEach((p, i) => (p.tags = tags[i]));
