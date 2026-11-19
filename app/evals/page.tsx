@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Accuracy", description: "How accurat
 export const dynamic = "force-dynamic";
 
 const P = (p?: Prop) => (p?.acc == null ? "n/a" : `${(p.acc * 100).toFixed(0)}%`);
-const CI = (p?: Prop) => (p ? `${(p.ci95[0] * 100).toFixed(0)} to ${(p.ci95[1] * 100).toFixed(0)}%` : "");
+const CI = (p?: Prop) => (p ? `${(p.ci95[0] * 100).toFixed(0)}–${(p.ci95[1] * 100).toFixed(0)}%` : "");
 
 function Meter({ p, base }: { p?: Prop; base?: Prop }) {
   if (!p?.acc) return null;
@@ -63,12 +63,33 @@ export default function Evals() {
         </p>
 
         {main && (
-          <div className="ev-figs">
-            <div><b>{P(main.llm.role_lenient)}</b><span>Role</span><small>{CI(main.llm.role_lenient)}, one-label {P(main.llm.role_strict)}</small></div>
-            <div><b>{P(main.llm.city)}</b><span>City</span><small>{CI(main.llm.city)}</small></div>
-            <div><b>{P(main.llm.verdict)}</b><span>Fresher or not</span><small>{CI(main.llm.verdict)}</small></div>
-            <div><b>{usd(run?.llm.cost_per_1k_usd ?? main.cost.per_1k_posts_usd)}</b><span>Per 1,000 posts</span><small>{run ? `measured on ${n(run.llm.posts_tagged)} posts` : "measured on the eval run"}</small></div>
-          </div>
+          <>
+            <div className="ev-figs">
+              <div>
+                <b>{P(main.llm.role_lenient)}</b>
+                <span>Role Accuracy</span>
+                <small title="Wilson 95% confidence interval: expected real-world range">95% CI: {CI(main.llm.role_lenient)} · strict: {P(main.llm.role_strict)}</small>
+              </div>
+              <div>
+                <b>{P(main.llm.city)}</b>
+                <span>City Accuracy</span>
+                <small title="Wilson 95% confidence interval: expected real-world range">95% CI: {CI(main.llm.city)}</small>
+              </div>
+              <div>
+                <b>{P(main.llm.verdict)}</b>
+                <span>Fresher Verdict</span>
+                <small title="Wilson 95% confidence interval: expected real-world range">95% CI: {CI(main.llm.verdict)}</small>
+              </div>
+              <div>
+                <b>{usd(run?.llm.cost_per_1k_usd ?? main.cost.per_1k_posts_usd)}</b>
+                <span>Cost / 1,000 Posts</span>
+                <small>{run ? `measured on ${n(run.llm.posts_tagged)} live posts` : "measured on eval run"}</small>
+              </div>
+            </div>
+            <p style={{ color: "var(--muted)", fontSize: 13, marginTop: 10 }}>
+              * <strong>95% CI (Confidence Interval)</strong>: The statistically expected accuracy range on real-world data (accounting for sample size margin of error).
+            </p>
+          </>
         )}
 
         <div className="ev-grid">
