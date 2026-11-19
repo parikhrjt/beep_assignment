@@ -7,7 +7,7 @@
 Every role, city and "fresher" tag comes with a **verbatim quote from the job post** that proves it.
 Plain code checks that the quote is really in the post. **No quote, no tag.**
 
-**[Live site: beep-jobs.vercel.app](https://beep-jobs.vercel.app)** · [Search jobs](https://beep-jobs.vercel.app/jobs) · [Accuracy](https://beep-jobs.vercel.app/evals) · [AI view (`/llms.txt`)](https://beep-jobs.vercel.app/llms.txt)
+**[Live site: beep-assignment-pearl.vercel.app](https://beep-assignment-pearl.vercel.app)** · [Search jobs](https://beep-assignment-pearl.vercel.app/jobs) · [Accuracy](https://beep-assignment-pearl.vercel.app/evals) · [AI view (`/llms.txt`)](https://beep-assignment-pearl.vercel.app/llms.txt)
 
 ![refresh](https://github.com/parikhrjt/beep_assignment/actions/workflows/refresh.yml/badge.svg)
 ![ci](https://github.com/parikhrjt/beep_assignment/actions/workflows/ci.yml/badge.svg)

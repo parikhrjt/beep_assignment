@@ -2,7 +2,7 @@
 
 **Candidate**: Rajat Parikh  
 **Repository**: [https://github.com/parikhrjt/beep_assignment](https://github.com/parikhrjt/beep_assignment)  
-**Live Application**: [https://beep-jobs.vercel.app](https://beep-jobs.vercel.app) · [Evaluation Suite](https://beep-jobs.vercel.app/evals) · [LLM Endpoint](https://beep-jobs.vercel.app/llms.txt)
+**Live Application**: [https://beep-assignment-pearl.vercel.app](https://beep-assignment-pearl.vercel.app) · [Evaluation Suite](https://beep-assignment-pearl.vercel.app/evals) · [LLM Endpoint](https://beep-assignment-pearl.vercel.app/llms.txt)
 
 ---
 
@@ -84,9 +84,9 @@ Running daily LLM extraction on 1,000+ jobs does not require significant compute
 | Deliverable | Path / Reference | Description |
 |---|---|---|
 | **Live Repository** | [github.com/parikhrjt/beep_assignment](https://github.com/parikhrjt/beep_assignment) | Complete production codebase, pipelines, and test suites. |
-| **Live Web App** | [beep-jobs.vercel.app](https://beep-jobs.vercel.app) | Production Next.js UI with live filters, drawer details, and verified receipts. |
-| **Interactive Evals** | [beep-jobs.vercel.app/evals](https://beep-jobs.vercel.app/evals) | Real-time accuracy scorecard, cost breakdown, and full audit table. |
-| **Machine-Readable API** | [beep-jobs.vercel.app/llms.txt](https://beep-jobs.vercel.app/llms.txt) | LLM crawler-friendly plain text endpoint. |
+| **Live Web App** | [beep-assignment-pearl.vercel.app](https://beep-assignment-pearl.vercel.app) | Production Next.js UI with live filters, drawer details, and verified receipts. |
+| **Interactive Evals** | [beep-assignment-pearl.vercel.app/evals](https://beep-assignment-pearl.vercel.app/evals) | Real-time accuracy scorecard, cost breakdown, and full audit table. |
+| **Machine-Readable API** | [beep-assignment-pearl.vercel.app/llms.txt](https://beep-assignment-pearl.vercel.app/llms.txt) | LLM crawler-friendly plain text endpoint. |
 | **50 Hand-Checked Dataset** | [`data/evaluation_50_handcheck.csv`](file:///Users/parikhrjt/Downloads/beep%20assignment/data/evaluation_50_handcheck.csv) | Ground truth vs LLM predictions, match flags, verbatim quotes, error notes. |
 | **Live Database (749 Posts)** | [`data/posts_749_live.csv`](file:///Users/parikhrjt/Downloads/beep%20assignment/data/posts_749_live.csv) / [`data/posts.jsonl`](file:///Users/parikhrjt/Downloads/beep%20assignment/data/posts.jsonl) | All 749 verified fresher posts currently indexed. |
 | **Walkthrough Script** | [`WALKTHROUGH_SCRIPT.md`](file:///Users/parikhrjt/Downloads/beep%20assignment/WALKTHROUGH_SCRIPT.md) | Structured script for the 5-minute Loom screen + face demonstration. |
