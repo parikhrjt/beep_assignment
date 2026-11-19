@@ -103,6 +103,9 @@ git clone https://github.com/parikhrjt/beep_assignment.git
 cd beep_assignment
 npm install
 
+# Optional: To run live LLM tagging (defaults to deterministic rules fallback if unset)
+cp .env.example .env   # Add GEMINI_API_KEY (free at aistudio.google.com)
+
 # 2. Run deterministic unit test suite (12 tests)
 npm test
 
