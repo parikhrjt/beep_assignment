@@ -27,6 +27,7 @@ jobs:
       - name: Run pipeline
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BEEP_JOBS_ALLOW_RULES: "1"
           BEEP_JOBS_FORCE: ${{ inputs.force && '1' || '' }}
         run: npm run pipeline
       - name: Build search index (smoke test)
